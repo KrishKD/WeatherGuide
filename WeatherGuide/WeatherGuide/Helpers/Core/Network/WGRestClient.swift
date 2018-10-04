@@ -18,7 +18,7 @@ class WGRestClient {
     
     internal static func apiRequest(api: APICallAttributes) -> WGRestClientRequest? {
         
-        let url = WGURL.endpoint + api.endPoint
+        let url: String = WGURL.endpoint + api.endPoint + "?" + api.parameter
         if let request = defaultRestSession.request(withURL: url) {
             return request
         } else {
@@ -42,7 +42,13 @@ class WGRestClient {
                 let error = restError(error.code, msg: error.localizedDescription)
                 onError(error)
             }
+            
+            if let data = data {
+                onSuccess(data)
+            }
         })
+        
+        dataTask?.resume()
     }
     
     internal static func restError(_ code: Int, msg: String ) -> WGRestError {

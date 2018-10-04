@@ -8,9 +8,9 @@
 
 import Foundation
 
+typealias JSON = [String: Any]
 typealias APIParameter = String
-typealias APIResponse = String
-typealias APISuccessHandler = (APIResponse) -> Void
+typealias APISuccessHandler = (Data) -> Void
 typealias APIErrorHandler = (WGRestError) -> Void
 typealias APICallAttributes = (taskType: RestRequestTask, endPoint: String, parameter: APIParameter)
 
