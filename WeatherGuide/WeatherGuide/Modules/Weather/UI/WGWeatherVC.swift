@@ -20,7 +20,7 @@ enum WeatherStatus: String {
     case snow = "snow"
     case mist = "mist"
 }
-class WGWeatherVC: UIViewController {
+class WGWeatherVC: WGBaseVC {
 
     @IBOutlet private weak var lblCity: UILabel!
     @IBOutlet private weak var lblTemperature: UILabel!
@@ -29,7 +29,7 @@ class WGWeatherVC: UIViewController {
     
     var location: WGLocation?
     let weatherCollectionCellId = "GridWeatherCell"
-    var gridDataSource: [[String: Any]] = []
+    var gridDataSource: [[String: String]] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,15 +45,21 @@ class WGWeatherVC: UIViewController {
     }
     
     func setGridDataSource(withData weatherData: WGWeatherModel?) {
-        self.gridDataSource.append(["Humidity": weatherData?.main?.humidity ?? 0])
-        self.gridDataSource.append(["Wind" : Int(weatherData?.wind?.speed ?? 0)])
         
-        guard let rain = weatherData?.rain, let snow = weatherData?.snow else {
-            return
+        if let humidityValue = weatherData?.main?.humidity, let speed = weatherData?.wind?.speed {
+            self.gridDataSource.append(["Humidity": "\(humidityValue)%"])
+            self.gridDataSource.append(["Wind" : "\(Int(speed))m/s"])
         }
-        self.gridDataSource.append(["Rain" : rain["3h"] ?? 0])
-        self.gridDataSource.append(["Snow" : snow["3h"] ?? 0])
-        self.weatherGrid.reloadData()
+        
+        if let rain = weatherData?.rain, let value = rain["3h"] {
+            self.gridDataSource.append(["ShowerRain" : "\(value)"])
+        }
+        
+        if let snow = weatherData?.snow, let value = snow["3h"] {
+            self.gridDataSource.append(["Snow" : "\(value)"])
+        }
+        
+        //self.weatherGrid.reloadData()
     }
     
     func setWeatherStatusImage() {
@@ -114,7 +120,7 @@ extension WGWeatherVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
     
     func collectionView(_ collectionView: UICollectionView, layout
         collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 100.0, height: 100.0)
+        return CGSize(width: 90.0, height: 100.0)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -128,7 +134,7 @@ extension WGWeatherVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let totalCellWidth = 100 * collectionView.numberOfItems(inSection: 0)
+        let totalCellWidth = 90 * collectionView.numberOfItems(inSection: 0)
         let totalSpacingWidth = 10 * (collectionView.numberOfItems(inSection: 0) - 1)
         
         let padding = (collectionView.layer.frame.size.width - CGFloat(totalCellWidth + totalSpacingWidth)) / 2

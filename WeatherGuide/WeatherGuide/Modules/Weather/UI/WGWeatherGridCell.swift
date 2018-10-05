@@ -18,10 +18,10 @@ class WGWeatherGridCell: UICollectionViewCell {
         // Initialization code
     }
     
-    func setupUI(withData data: [String: Any]) {
+    func setupUI(withData data: [String: String]) {
         if let key = data.keys.first, let value = data[key] {
             imgCondition.image = UIImage(named: key)
-            lblData.text = "\(value)"
+            lblData.text = value
         }
     }
 

@@ -8,22 +8,23 @@
 
 import UIKit
 
-class WGHomeVC: UIViewController {
+class WGHomeVC: WGBaseVC {
 
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var viewNoLocation: UIView!
+    @IBOutlet weak var btnEdit: UIButton!
+    
     var dataSource: [WGLocation] = []
     var viewModel: WGWeatherViewModel = WGWeatherViewModel()
-    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        //registerCell()
-    }
-    
-    func registerCell() {
-        let nib = UINib(nibName: "WGLocationcell", bundle: .main)
-        self.tableView.register(nib, forCellReuseIdentifier: "WGLocationcell")
+        viewNoLocation.isHidden = true
+        btnEdit.isHidden = true
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 50
     }
     
     @IBAction func unwindToHome(segue: UIStoryboardSegue){
@@ -35,10 +36,10 @@ class WGHomeVC: UIViewController {
                 let longString = String(format: "%f", longitude)
                 
                 let params = "lat=\(latString)&lon=\(longString)&appid=\(API.key)&units=metric"
-                
+                showProgressView()
                 viewModel.getCurrentWeatherData(params: params, onSuccess: { (location) in
-                    
                     DispatchQueue.main.async {
+                        self.removeProgressView()
                         self.dataSource.append(location)
                         self.tableView.reloadData()
                     }
@@ -49,6 +50,17 @@ class WGHomeVC: UIViewController {
         }
     }
 
+    @IBAction func btnEditCick(_ sender: Any) {
+        tableView.isEditing = !tableView.isEditing
+        
+        if let button = sender as? UIButton {
+            if tableView.isEditing {
+                button.setBackgroundImage(UIImage(named: "Done"), for: .normal)
+            } else {
+                button.setBackgroundImage(UIImage(named: "Edit"), for: .normal)
+            }
+        }
+    }
     
     // MARK: - Navigation
 
@@ -72,7 +84,15 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.dataSource.count
+        if !self.dataSource.isEmpty {
+            viewNoLocation.isHidden = true
+            btnEdit.isHidden = false
+            return self.dataSource.count
+        } else {
+            btnEdit.isHidden = true
+            viewNoLocation.isHidden = false
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -81,7 +101,14 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
         if let locationcell = locationcell as? WGLocationCell {
             locationcell.lblCityName.text = dataSource[indexPath.row].weather?.name
         }
-        
+        //locationcell.selectionStyle = .none
         return locationcell
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            dataSource.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
     }
 }

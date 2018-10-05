@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class WGLocationMapVC: UIViewController {
+class WGLocationMapVC: WGBaseVC {
 
     @IBOutlet private weak var mapView: MKMapView!
     @IBOutlet var tapRecognizer: UITapGestureRecognizer!
