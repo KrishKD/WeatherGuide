@@ -16,6 +16,8 @@ class WGDataManager {
 
         WGRestClient.dataRequestAPICall(api: api, onSuccess: { (response) in
             do {
+                let jsonObject =  try JSONSerialization.jsonObject(with: response, options: [])
+                print(jsonObject)
                 let weather = try JSONDecoder().decode(WGWeatherModel.self, from: response)
                 onSuccess(weather)
             } catch {

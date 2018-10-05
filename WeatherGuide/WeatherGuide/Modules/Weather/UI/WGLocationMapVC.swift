@@ -10,13 +10,13 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class WGLocationMapVC: UIViewController {
+class WGLocationMapVC: WGBaseVC {
 
     @IBOutlet private weak var mapView: MKMapView!
     @IBOutlet var tapRecognizer: UITapGestureRecognizer!
     let locationManager: CLLocationManager = CLLocationManager()
     var currentLocation: CLLocation?
-    
+    var pinLocation: CLLocation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +38,16 @@ class WGLocationMapVC: UIViewController {
             let coordinates = self.mapView.convert(touchPoint, toCoordinateFrom: self.mapView)
             
             addAnnotationPin(atLocation: coordinates)
+        }
+    }
+    
+    @IBAction func btnAddLocationClick(_ sender: Any) {
+        if let location = self.mapView.annotations.first {
+            self.pinLocation = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        }
+        
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "unWindToHomeScreen", sender: self)
         }
     }
     

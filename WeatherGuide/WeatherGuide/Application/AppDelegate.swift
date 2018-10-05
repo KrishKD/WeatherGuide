@@ -16,13 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        let viewModel = WGWeatherViewModel()
-        let params = "lat=0&lon=0&appid=\(API.key)&units=metric"
-        viewModel.getCurrentWeatherData(params: params, onSuccess: { (weatherModel) in
-            print(weatherModel.coord?.latitude)
-        }) { (error) in
-            print("\(error)")
-        }
         return true
     }
 
