@@ -49,6 +49,7 @@ class WGWeatherVC: WGBaseVC {
         if let humidityValue = weatherData?.main?.humidity, let speed = weatherData?.wind?.speed {
             self.gridDataSource.append(["Humidity": "\(humidityValue)%"])
             self.gridDataSource.append(["Wind" : "\(Int(speed))m/s"])
+            //self.gridDataSource.append(["ShowerRain" : "3m"])
         }
         
         if let rain = weatherData?.rain, let value = rain["3h"] {
@@ -58,8 +59,6 @@ class WGWeatherVC: WGBaseVC {
         if let snow = weatherData?.snow, let value = snow["3h"] {
             self.gridDataSource.append(["Snow" : "\(value)"])
         }
-        
-        //self.weatherGrid.reloadData()
     }
     
     func setWeatherStatusImage() {
@@ -120,7 +119,7 @@ extension WGWeatherVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
     
     func collectionView(_ collectionView: UICollectionView, layout
         collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 90.0, height: 100.0)
+        return CGSize(width: 90.0, height: 60.0)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -135,10 +134,15 @@ extension WGWeatherVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         let totalCellWidth = 90 * collectionView.numberOfItems(inSection: 0)
+        let totalCellHeight = 60 * collectionView.numberOfItems(inSection: 0)
         let totalSpacingWidth = 10 * (collectionView.numberOfItems(inSection: 0) - 1)
         
-        let padding = (collectionView.layer.frame.size.width - CGFloat(totalCellWidth + totalSpacingWidth)) / 2
+        if UIDevice.current.orientation.isLandscape {
+            let padding = (collectionView.layer.frame.size.height - CGFloat(totalCellHeight + totalSpacingWidth)) / 2
+            return UIEdgeInsets(top: padding, left: 0, bottom: padding, right: 0)
+        }
         
+        let padding = (collectionView.layer.frame.size.width - CGFloat(totalCellWidth + totalSpacingWidth)) / 2
         return UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
     }
 }
