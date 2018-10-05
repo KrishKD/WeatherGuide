@@ -25,8 +25,8 @@ class WGWeatherModel: Codable {
 }
 
 class Coordinates: Codable {
-    var latitude: Float?
-    var longitude: Float?
+    var lat: Float?
+    var lon: Float?
 }
 
 class Weather: Codable {
@@ -44,7 +44,7 @@ class Wind: Codable {
 class Temperature: Codable {
     var temp: Float?
     var pressure: Float?
-    var humidity: Float?
+    var humidity: Int?
     var temp_min: Float?
     var temp_max: Float?
     var sea_level: Float?

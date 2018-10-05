@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		96059FDA2166BC6F000270CE /* WGWeatherGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96059FD82166BC6F000270CE /* WGWeatherGridCell.swift */; };
 		965CB7EC21644B77007245D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 965CB7EA21644B77007245D9 /* Main.storyboard */; };
 		965CB7EE21644B78007245D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 965CB7ED21644B78007245D9 /* Assets.xcassets */; };
 		965CB7F121644B78007245D9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 965CB7EF21644B78007245D9 /* LaunchScreen.storyboard */; };
@@ -17,12 +18,14 @@
 		965CB82421645261007245D9 /* WGRestClientRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965CB82321645261007245D9 /* WGRestClientRequest.swift */; };
 		965CB828216458E1007245D9 /* WGConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965CB827216458E1007245D9 /* WGConstants.swift */; };
 		96D8229A2165714500DC4F70 /* WGForecastModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D822992165714500DC4F70 /* WGForecastModel.swift */; };
-		96D8229E21659B5500DC4F70 /* WGiPhoneHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D8229D21659B5500DC4F70 /* WGiPhoneHomeVC.swift */; };
+		96D8229E21659B5500DC4F70 /* WGHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D8229D21659B5500DC4F70 /* WGHomeVC.swift */; };
 		96D822A02165A0A700DC4F70 /* WGWeatherVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D8229F2165A0A700DC4F70 /* WGWeatherVC.swift */; };
 		96D822A22165A2A100DC4F70 /* WGLocationMapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D822A12165A2A100DC4F70 /* WGLocationMapVC.swift */; };
 		96D822A52165A5EB00DC4F70 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96D822A42165A5EB00DC4F70 /* CoreLocation.framework */; };
 		96D822A72165BA7100DC4F70 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96D822A62165BA7100DC4F70 /* MapKit.framework */; };
 		96D822A92165C9CD00DC4F70 /* WGPointAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D822A82165C9CD00DC4F70 /* WGPointAnnotation.swift */; };
+		96D822AB216650B200DC4F70 /* WGLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D822AA216650B200DC4F70 /* WGLocation.swift */; };
+		96D822AE21666AA400DC4F70 /* WGLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D822AC21666AA400DC4F70 /* WGLocationCell.swift */; };
 		96FAADAE2165292100960829 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FAADAD2165292100960829 /* AppDelegate.swift */; };
 		96FAADB021653A4500960829 /* WGDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FAADAF21653A4500960829 /* WGDataManager.swift */; };
 		96FAADEC21654F4400960829 /* WGWeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FAADEB21654F4400960829 /* WGWeatherModel.swift */; };
@@ -30,6 +33,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		96059FD82166BC6F000270CE /* WGWeatherGridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGWeatherGridCell.swift; sourceTree = "<group>"; };
 		965CB7E321644B76007245D9 /* WeatherGuide.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherGuide.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		965CB7EB21644B77007245D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		965CB7ED21644B78007245D9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -42,12 +46,14 @@
 		965CB82321645261007245D9 /* WGRestClientRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGRestClientRequest.swift; sourceTree = "<group>"; };
 		965CB827216458E1007245D9 /* WGConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGConstants.swift; sourceTree = "<group>"; };
 		96D822992165714500DC4F70 /* WGForecastModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGForecastModel.swift; sourceTree = "<group>"; };
-		96D8229D21659B5500DC4F70 /* WGiPhoneHomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGiPhoneHomeVC.swift; sourceTree = "<group>"; };
+		96D8229D21659B5500DC4F70 /* WGHomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGHomeVC.swift; sourceTree = "<group>"; };
 		96D8229F2165A0A700DC4F70 /* WGWeatherVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGWeatherVC.swift; sourceTree = "<group>"; };
 		96D822A12165A2A100DC4F70 /* WGLocationMapVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGLocationMapVC.swift; sourceTree = "<group>"; };
 		96D822A42165A5EB00DC4F70 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		96D822A62165BA7100DC4F70 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		96D822A82165C9CD00DC4F70 /* WGPointAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGPointAnnotation.swift; sourceTree = "<group>"; };
+		96D822AA216650B200DC4F70 /* WGLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGLocation.swift; sourceTree = "<group>"; };
+		96D822AC21666AA400DC4F70 /* WGLocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGLocationCell.swift; sourceTree = "<group>"; };
 		96FAADAD2165292100960829 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96FAADAF21653A4500960829 /* WGDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGDataManager.swift; sourceTree = "<group>"; };
 		96FAADEB21654F4400960829 /* WGWeatherModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGWeatherModel.swift; sourceTree = "<group>"; };
@@ -214,10 +220,12 @@
 		96FAADE921654F0B00960829 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				96D8229D21659B5500DC4F70 /* WGiPhoneHomeVC.swift */,
+				96D8229D21659B5500DC4F70 /* WGHomeVC.swift */,
 				96D8229F2165A0A700DC4F70 /* WGWeatherVC.swift */,
 				96D822A12165A2A100DC4F70 /* WGLocationMapVC.swift */,
 				96D822A82165C9CD00DC4F70 /* WGPointAnnotation.swift */,
+				96D822AC21666AA400DC4F70 /* WGLocationCell.swift */,
+				96059FD82166BC6F000270CE /* WGWeatherGridCell.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -227,6 +235,7 @@
 			children = (
 				96FAADEB21654F4400960829 /* WGWeatherModel.swift */,
 				96D822992165714500DC4F70 /* WGForecastModel.swift */,
+				96D822AA216650B200DC4F70 /* WGLocation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -309,17 +318,20 @@
 			files = (
 				96D822A22165A2A100DC4F70 /* WGLocationMapVC.swift in Sources */,
 				96FAADAE2165292100960829 /* AppDelegate.swift in Sources */,
+				96D822AB216650B200DC4F70 /* WGLocation.swift in Sources */,
 				96D822A92165C9CD00DC4F70 /* WGPointAnnotation.swift in Sources */,
 				96FAADB021653A4500960829 /* WGDataManager.swift in Sources */,
 				96D8229A2165714500DC4F70 /* WGForecastModel.swift in Sources */,
 				965CB82421645261007245D9 /* WGRestClientRequest.swift in Sources */,
 				965CB81821644DF3007245D9 /* WGRestClient.swift in Sources */,
 				965CB81E2164505B007245D9 /* WGRestClientConstants.swift in Sources */,
+				96059FDA2166BC6F000270CE /* WGWeatherGridCell.swift in Sources */,
 				96D822A02165A0A700DC4F70 /* WGWeatherVC.swift in Sources */,
 				96FAADEC21654F4400960829 /* WGWeatherModel.swift in Sources */,
-				96D8229E21659B5500DC4F70 /* WGiPhoneHomeVC.swift in Sources */,
+				96D8229E21659B5500DC4F70 /* WGHomeVC.swift in Sources */,
 				965CB82121645104007245D9 /* WGRestError.swift in Sources */,
 				96FAADEE2165538200960829 /* WGWeatherViewModel.swift in Sources */,
+				96D822AE21666AA400DC4F70 /* WGLocationCell.swift in Sources */,
 				965CB81B21644E43007245D9 /* WGRestClientSession.swift in Sources */,
 				965CB828216458E1007245D9 /* WGConstants.swift in Sources */,
 			);
@@ -471,7 +483,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = S34766Z6YG;
 				INFOPLIST_FILE = WeatherGuide/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -480,7 +492,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -492,7 +504,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = S34766Z6YG;
 				INFOPLIST_FILE = WeatherGuide/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -501,7 +513,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

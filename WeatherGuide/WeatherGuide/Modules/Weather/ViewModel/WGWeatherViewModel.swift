@@ -11,10 +11,12 @@ import Foundation
 class WGWeatherViewModel {
     
     func getCurrentWeatherData(params: String,
-                               onSuccess: @escaping (WGWeatherModel) -> Void,
+                               onSuccess: @escaping (WGLocation) -> Void,
                                onFailure: @escaping (String) -> Void) {
-        WGDataManager.getCurrentWeather(params: params, onSuccess: { (response) in
-            onSuccess(response)
+        WGDataManager.getCurrentWeather(params: params, onSuccess: { (weather) in
+            let location = WGLocation()
+            location.weather = weather
+            onSuccess(location)
         }) { (error) in
             onFailure(error)
         }
