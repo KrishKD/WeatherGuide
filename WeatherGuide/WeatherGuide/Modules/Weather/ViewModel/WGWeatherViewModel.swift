@@ -15,6 +15,10 @@ class WGWeatherViewModel {
                                onFailure: @escaping (String) -> Void) {
         WGDataManager.getCurrentWeather(params: params, onSuccess: { (weather) in
             let location = WGLocation()
+            location.id = weather.id
+            if let unixTimestamp = weather.dt {
+                location.timestamp = TimeInterval(unixTimestamp)
+            }
             location.weather = weather
             onSuccess(location)
         }) { (error) in
