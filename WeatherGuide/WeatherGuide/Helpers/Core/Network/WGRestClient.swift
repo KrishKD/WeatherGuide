@@ -29,29 +29,32 @@ class WGRestClient {
     public static func dataRequestAPICall(api: APICallAttributes,
                                           onSuccess: @escaping APISuccessHandler,
                                           onError: @escaping APIErrorHandler){
+        //Setup Request object
         let clientRequest = apiRequest(api: api)
         
+        //Throw error if request object is not valid
         guard let wgRequest = clientRequest, let dataRequest = wgRequest.dataRequest, let session = defaultRestSession.session else {
-            let error = restError(RestClientErrorCodes.nullRequestObject, msg: RestClientErrorMessage.nullRequestObject)
-            onError(error)
+            onError(RestClientErrorMessage.nullRequestObject)
             return
         }
         
+        //Make request
         dataTask = session.dataTask(with: dataRequest, completionHandler: { (data, response, error) in
-            if let error = error as NSError? {
-                let error = restError(error.code, msg: error.localizedDescription)
-                onError(error)
-            }
             
-            if let data = data {
-                onSuccess(data)
+            if let error = error as NSError? {
+                onError(error.localizedDescription)
+            } else {
+                guard response != nil else {
+                    onError(RestClientErrorMessage.nullResponseObject)
+                    return
+                }
+                
+                if let data = data {
+                    onSuccess(data)
+                }
             }
         })
         
         dataTask?.resume()
-    }
-    
-    internal static func restError(_ code: Int, msg: String ) -> WGRestError {
-        return WGRestError(code, msg)
     }
 }

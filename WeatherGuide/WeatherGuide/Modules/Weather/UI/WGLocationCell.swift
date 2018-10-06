@@ -10,7 +10,7 @@ import UIKit
 
 class WGLocationCell: UITableViewCell {
 
-    @IBOutlet weak var lblCityName: UILabel!
+    @IBOutlet private weak var lblCityName: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -19,8 +19,10 @@ class WGLocationCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    }
+    
+    func setupUI(withData name: String) {
+        lblCityName.text = name
     }
     
 }

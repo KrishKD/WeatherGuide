@@ -13,7 +13,7 @@ struct WGURL {
 }
 
 struct API {
-    static let key: String = ""
+    static let key: String = "9b33cf970785e69d5643d66da28e5117"
     static let currentWeather: String = "weather"
     static let forecast: String = "forecast"
 }

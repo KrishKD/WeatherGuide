@@ -25,25 +25,29 @@ class WGHelpVC: UIViewController {
         if let web = webView {
             self.webContainerView.addSubview(web)
         }
+        
+        //Setup constraints so that Webview hugs webContainerView
         if let webView = self.webView {
             self.webContainerView.addSubview(webView)
             webView.topAnchor.constraint(equalTo: webContainerView.topAnchor).isActive = true
             webView.rightAnchor.constraint(equalTo: webContainerView.rightAnchor).isActive = true
             webView.leftAnchor.constraint(equalTo: webContainerView.leftAnchor).isActive = true
             webView.bottomAnchor.constraint(equalTo: webContainerView.bottomAnchor).isActive = true
-            webView.heightAnchor.constraint(equalTo: webContainerView.heightAnchor).isActive = true
         }
         
         loadRequest()
     }
     
+    //Load HTML and resources into the webview.
     func loadRequest() {
-        
+        //Subdirectory - Folder were HTML file and resources reside.
+ 
         if let url = Bundle.main.url(forResource: "Help", withExtension: "html", subdirectory: "WebFiles") {
             webView?.loadFileURL(url, allowingReadAccessTo: url)
         }
     }
     
+    //Dismiss Help VC
     @IBAction func btnCloseClick(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }

@@ -8,7 +8,7 @@
 
 import Foundation
 class WGDataManager {
-    
+    //Retrieve current weather data
     class func getCurrentWeather(params: String,
                                  onSuccess: @escaping (WGWeatherModel) -> Void,
                                  onFailure: @escaping (String) -> Void) {
@@ -18,6 +18,8 @@ class WGDataManager {
             do {
                 let jsonObject =  try JSONSerialization.jsonObject(with: response, options: [])
                 print(jsonObject)
+                
+                //Convert Data to model object
                 let weather = try JSONDecoder().decode(WGWeatherModel.self, from: response)
                 
                 guard let erroMsg = weather.message, weather.cod != nil else {
@@ -29,11 +31,12 @@ class WGDataManager {
                 onFailure(error.localizedDescription)
             }
         }) { (error) in
-            onFailure(error.statusMessage)
+            onFailure(error)
         }
     }
     
-    class func getForecast(params: String,
+    //Retrieve forecast weather data
+    /*class func getForecast(params: String,
                            onSuccess: @escaping APISuccessHandler,
                            onFailure: @escaping (String) -> Void) {
         let api = (taskType: RestRequestTask.dataTask, endPoint: API.forecast, parameter: params)
@@ -42,5 +45,5 @@ class WGDataManager {
         }, onError: {(error) in
             onFailure(error.statusMessage)
         })
-    }
+    }*/
 }

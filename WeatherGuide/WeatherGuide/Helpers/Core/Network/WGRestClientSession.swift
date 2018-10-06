@@ -12,6 +12,7 @@ class WGRestClientSession {
     public var session: URLSession?
     public static let defaultSession: WGRestClientSession = WGRestClientSession()
     
+    //Configure URLSession
     private init() {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 20.0
@@ -19,6 +20,7 @@ class WGRestClientSession {
         session = URLSession(configuration: configuration)
     }
     
+    //Configure URLRequest
     public func request(withURL url: String) -> WGRestClientRequest? {
         if let url = URL(string: url), let session = session {
             let request = URLRequest(url: url,

@@ -14,8 +14,8 @@ class WGLocationMapVC: WGBaseVC {
 
     @IBOutlet private weak var mapView: MKMapView!
     @IBOutlet var tapRecognizer: UITapGestureRecognizer!
-    let locationManager: CLLocationManager = CLLocationManager()
-    var currentLocation: CLLocation?
+    private let locationManager: CLLocationManager = CLLocationManager()
+    private var currentLocation: CLLocation?
     var pinLocation: CLLocation?
     
     override func viewDidLoad() {
@@ -54,6 +54,7 @@ class WGLocationMapVC: WGBaseVC {
         }
     }
     
+    //Get user's current location and set map region
     func getCurrentLocation() {
         self.mapView.showsUserLocation = true
         locationManager.delegate = self
@@ -66,6 +67,7 @@ class WGLocationMapVC: WGBaseVC {
         }
     }
     
+    //Add Pin annotation to the map
     func addAnnotationPin(atLocation coordinates: CLLocationCoordinate2D) {
         let pointAnnotation = WGPointAnnotation()
         pointAnnotation.pinImageName = "Pin"
@@ -77,35 +79,29 @@ class WGLocationMapVC: WGBaseVC {
             self.mapView.addAnnotation(annotation)
         }
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension WGLocationMapVC: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let currentLoc = locations.last{
             self.currentLocation = currentLoc
+            
+            //Set map region
             let region = MKCoordinateRegion(center: currentLoc.coordinate, latitudinalMeters: 10000, longitudinalMeters: 10000)
             self.mapView.setRegion(region, animated: true)
             addAnnotationPin(atLocation: currentLoc.coordinate)
         }
+        //Stop location update once we get user location.
         self.locationManager.stopUpdatingLocation()
     }
 }
 
 extension WGLocationMapVC: MKMapViewDelegate {
+    
+    //Set custom annotation image to that map
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let identifier = "pin"
-    var annotationView = self.mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        var annotationView = self.mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
         
         if annotationView == nil {
             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
