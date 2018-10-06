@@ -41,7 +41,8 @@ class WGHomeVC: WGBaseVC {
                 let longitude = mapVC.pinLocation?.coordinate.longitude {
                 let latString = String(format: "%f", latitude)
                 let longString = String(format: "%f", longitude)
-                fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
+                //fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
+                fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString), onCompletion: nil)
             }
         }
     }
@@ -58,7 +59,8 @@ class WGHomeVC: WGBaseVC {
         }
     }
     
-    func fetchCurrentWeatherData(forCoordinates pinLocation: (lat: String, long: String)) {
+    func fetchCurrentWeatherData(forCoordinates pinLocation: (lat: String, long: String),
+                                 onCompletion completionHandler: (() -> Void)?) {
         let params = "lat=\(pinLocation.lat)&lon=\(pinLocation.long)&appid=\(API.key)&units=imperial"
         
         showProgressView()
@@ -67,6 +69,9 @@ class WGHomeVC: WGBaseVC {
                 self.removeProgressView()
                 self.dataSource = locations
                 self.tableView.reloadData()
+                if let callback = completionHandler {
+                    callback()
+                }
             }
         }) { (error) in
             DispatchQueue.main.async {
@@ -127,7 +132,6 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         if let timestamp = dataSource[indexPath.row].timestamp {
             let lastDataReceivedTimeStamp = Int(timestamp)
             let currentTimeInterval = Int(Date().timeIntervalSince1970)
@@ -138,8 +142,13 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
                     let longitude = dataSource[indexPath.row].weather?.coord?.lon {
                     let latString = String(format: "%f", latitude)
                     let longString = String(format: "%f", longitude)
-                    fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
+                    fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString)) {
+                        self.performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
+                    }
+                    //fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
                 }
+            } else {
+                performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
             }
         }
     }
