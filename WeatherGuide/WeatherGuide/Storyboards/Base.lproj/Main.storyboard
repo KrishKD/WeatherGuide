@@ -61,7 +61,7 @@
                                 </connections>
                             </button>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Fhd-la-Nas">
-                                <rect key="frame" x="0.0" y="62.5" width="320" height="56"/>
+                                <rect key="frame" x="0.0" y="63" width="160" height="56"/>
                                 <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                 <connections>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="bMm-ji-Dkw"/>
@@ -235,9 +235,7 @@
                                 </constraints>
                                 <state key="normal" backgroundImage="Help-Green"/>
                                 <connections>
-                                    <segue destination="WpG-lJ-QVA" kind="popoverPresentation" popoverAnchorView="KWd-4v-4BZ" id="j8E-Ee-VUz">
-                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
-                                    </segue>
+                                    <segue destination="WpG-lJ-QVA" kind="presentation" id="j8E-Ee-VUz"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iYy-AT-P2K">
@@ -395,11 +393,22 @@
                                 </constraints>
                                 <state key="normal" backgroundImage="Help"/>
                                 <connections>
-                                    <segue destination="WpG-lJ-QVA" kind="popoverPresentation" popoverAnchorView="9vT-q7-hZX" id="tqb-gM-wcv">
-                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
-                                    </segue>
+                                    <segue destination="WpG-lJ-QVA" kind="presentation" id="tqb-gM-wcv"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iId-iF-qU7">
+                                <rect key="frame" x="139" y="307" width="42" height="20"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="Label">
+                                        <attributes>
+                                            <color key="NSColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <font key="NSFont" size="17" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.1803921568627451" green="0.80000000000000004" blue="0.44313725490196076" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -408,9 +417,13 @@
                                 <variation key="heightClass=compact-widthClass=compact" constant="10"/>
                             </constraint>
                             <constraint firstAttribute="bottom" secondItem="Ak8-yC-bMw" secondAttribute="bottom" id="79m-03-VcD"/>
+                            <constraint firstItem="iId-iF-qU7" firstAttribute="centerX" secondItem="0U5-Oe-rzL" secondAttribute="centerX" id="BdV-Xr-VK5"/>
                             <constraint firstItem="YHM-Mn-6kN" firstAttribute="centerX" secondItem="1pO-41-8be" secondAttribute="centerX" multiplier="0.4" constant="0.40000000000000002" id="Bez-mw-yyM"/>
                             <constraint firstItem="YHM-Mn-6kN" firstAttribute="top" secondItem="yyR-sU-mgR" secondAttribute="bottom" constant="20" id="G4u-FT-cri"/>
                             <constraint firstItem="yyR-sU-mgR" firstAttribute="leading" secondItem="1pO-41-8be" secondAttribute="leading" constant="10" id="J05-wU-6Bj"/>
+                            <constraint firstItem="iId-iF-qU7" firstAttribute="top" secondItem="0U5-Oe-rzL" secondAttribute="bottom" constant="20" id="Uaa-4j-Jrw">
+                                <variation key="heightClass=compact-widthClass=compact" constant="10"/>
+                            </constraint>
                             <constraint firstItem="lMg-Ig-eim" firstAttribute="top" secondItem="YHM-Mn-6kN" secondAttribute="bottom" constant="20" id="V9g-s8-xN6">
                                 <variation key="heightClass=compact-widthClass=compact" constant="10"/>
                             </constraint>
@@ -463,6 +476,7 @@
                     <connections>
                         <outlet property="imgWeatherStatus" destination="lMg-Ig-eim" id="3fx-jj-C2i"/>
                         <outlet property="lblCity" destination="YHM-Mn-6kN" id="uhK-80-WQr"/>
+                        <outlet property="lblHLTemp" destination="iId-iF-qU7" id="jG2-6j-gpa"/>
                         <outlet property="lblTemperature" destination="0U5-Oe-rzL" id="aLF-FF-JOF"/>
                         <outlet property="weatherGrid" destination="1pO-41-8be" id="aRM-7e-h43"/>
                     </connections>
@@ -483,6 +497,6 @@
         <image name="Wind" width="50" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="5U5-tU-qNU"/>
+        <segue reference="tqb-gM-wcv"/>
     </inferredMetricsTieBreakers>
 </document>
