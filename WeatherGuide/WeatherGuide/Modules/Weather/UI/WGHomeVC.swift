@@ -58,12 +58,13 @@ class WGHomeVC: WGBaseVC {
         showProgressView()
         viewModel.getCurrentWeatherData(params: params, onSuccess: { (location) in
             DispatchQueue.main.async {
-                if let unixTimestamp = location.weather?.dt {
-                    location.timestamp = TimeInterval(unixTimestamp)
+                self.removeProgressView()
+                if let duplicateItemIndex = self.dataSource.firstIndex(where: { $0.id == location.id }) {
+                    self.dataSource[duplicateItemIndex] = location
+                } else {
+                    self.dataSource.append(location)
                 }
                 
-                self.removeProgressView()
-                self.dataSource.append(location)
                 self.tableView.reloadData()
             }
         }) { (error) in
