@@ -19,8 +19,13 @@ class WGDataManager {
                 let jsonObject =  try JSONSerialization.jsonObject(with: response, options: [])
                 print(jsonObject)
                 let weather = try JSONDecoder().decode(WGWeatherModel.self, from: response)
-                onSuccess(weather)
-            } catch {
+                
+                guard let erroMsg = weather.message, weather.cod != nil else {
+                    onSuccess(weather)
+                    return
+                }
+                onFailure(erroMsg)
+            } catch let error as Error{
                 onFailure(error.localizedDescription)
             }
         }) { (error) in

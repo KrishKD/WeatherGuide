@@ -9,16 +9,16 @@
 import UIKit
 
 enum WeatherStatus: String {
-    case clearSky = "clear sky"
-    case cloudy = "few clouds"
+    case clearSky = "Clear"
+    case cloudy = "Clouds"
     case scatterredClouds = "scattered clouds"
     case overcastClouds = "overcast clouds"
     case brokenClouds = "broken clouds"
     case shower = "shower rain"
-    case rain = "rain"
+    case rain = "Rain"
     case thunderstorm = "thunderstorm"
-    case snow = "snow"
-    case mist = "mist"
+    case snow = "Snow"
+    case mist = "Mist"
 }
 class WGWeatherVC: WGBaseVC {
 
@@ -68,7 +68,7 @@ class WGWeatherVC: WGBaseVC {
     }
     
     func setWeatherStatusImage() {
-        if let weatherDescription = self.location?.weather?.weather?.first?.description {
+        if let weatherDescription = self.location?.weather?.weather?.first?.main {
             var imageName = ""
             switch weatherDescription {
             case WeatherStatus.clearSky.rawValue:
@@ -125,7 +125,7 @@ extension WGWeatherVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
     
     func collectionView(_ collectionView: UICollectionView, layout
         collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 90.0, height: 60.0)
+        return CGSize(width: 95.0, height: 60.0)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -139,7 +139,7 @@ extension WGWeatherVC: UICollectionViewDelegate, UICollectionViewDataSource, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let totalCellWidth = 90 * collectionView.numberOfItems(inSection: 0)
+        let totalCellWidth = 95 * collectionView.numberOfItems(inSection: 0)
         let totalCellHeight = 60 * collectionView.numberOfItems(inSection: 0)
         let totalSpacingWidth = 10 * (collectionView.numberOfItems(inSection: 0) - 1)
         
