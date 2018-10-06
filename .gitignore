@@ -21,6 +21,7 @@ xcuserdata/
 
 ## Other
 *.moved-aside
+*.xcuserdata
 *.xccheckout
 *.xcscmblueprint
 .DS_Store
