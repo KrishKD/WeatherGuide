@@ -17,7 +17,7 @@ class WGWeatherModel: Codable {
     var wind: Wind?
     var rain: [String: Float]?
     var snow: [String: Float]?
-    var dt: Int?
+    var dt: Double?
     var sys: System?
     var id: Int?
     var name: String?

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 class WGHomeVC: WGBaseVC {
 
@@ -30,22 +31,11 @@ class WGHomeVC: WGBaseVC {
     @IBAction func unwindToHome(segue: UIStoryboardSegue){
         let sourceVC = segue.source
         if let mapVC = sourceVC as? WGLocationMapVC {
-            if let lat = mapVC.pinLocation?.coordinate.latitude,
+            if let latitude = mapVC.pinLocation?.coordinate.latitude,
                 let longitude = mapVC.pinLocation?.coordinate.longitude {
-                let latString = String(format: "%f", lat)
+                let latString = String(format: "%f", latitude)
                 let longString = String(format: "%f", longitude)
-                
-                let params = "lat=\(latString)&lon=\(longString)&appid=\(API.key)&units=metric"
-                showProgressView()
-                viewModel.getCurrentWeatherData(params: params, onSuccess: { (location) in
-                    DispatchQueue.main.async {
-                        self.removeProgressView()
-                        self.dataSource.append(location)
-                        self.tableView.reloadData()
-                    }
-                }) { (error) in
-                    //Display error
-                }
+                fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
             }
         }
     }
@@ -62,6 +52,25 @@ class WGHomeVC: WGBaseVC {
         }
     }
     
+    func fetchCurrentWeatherData(forCoordinates pinLocation: (lat: String, long: String)) {
+        let params = "lat=\(pinLocation.lat)&lon=\(pinLocation.long)&appid=\(API.key)&units=imperial"
+        
+        showProgressView()
+        viewModel.getCurrentWeatherData(params: params, onSuccess: { (location) in
+            DispatchQueue.main.async {
+                if let unixTimestamp = location.weather?.dt {
+                    location.timestamp = TimeInterval(unixTimestamp)
+                }
+                
+                self.removeProgressView()
+                self.dataSource.append(location)
+                self.tableView.reloadData()
+            }
+        }) { (error) in
+            self.removeProgressView()
+            //Display error
+        }
+    }
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -109,6 +118,24 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
         if editingStyle == .delete {
             dataSource.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if let timestamp = dataSource[indexPath.row].timestamp {
+            let lastDataReceivedTimeStamp = Int(timestamp)
+            let currentTimeInterval = Int(Date().timeIntervalSince1970)
+            let difference = currentTimeInterval - lastDataReceivedTimeStamp
+            
+            if difference > 3600 {
+                if let latitude = dataSource[indexPath.row].weather?.coord?.lat,
+                    let longitude = dataSource[indexPath.row].weather?.coord?.lon {
+                    let latString = String(format: "%f", latitude)
+                    let longString = String(format: "%f", longitude)
+                    fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
+                }
+            }
         }
     }
 }

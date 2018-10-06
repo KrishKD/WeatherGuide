@@ -38,17 +38,23 @@ class WGWeatherVC: WGBaseVC {
         if let weatherData = location {
             lblCity.text = weatherData.weather?.name
             setWeatherStatusImage()
-            lblTemperature.text = "\(Int(weatherData.weather?.main?.temp ?? 0))°"
+
+            // set attributed text on temperature label
+            let superScriptAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 40.0), NSAttributedString.Key.baselineOffset: 20]
+            let tempAttributedString = NSMutableAttributedString(string: "\(Int(weatherData.weather?.main?.temp ?? 0))°F", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 70.0)])
+            tempAttributedString.setAttributes(superScriptAttributes, range: NSMakeRange(tempAttributedString.length - 2, 2))
+            
+            lblTemperature.attributedText = tempAttributedString
+            
             setGridDataSource(withData: weatherData.weather)
         }
-        
     }
     
     func setGridDataSource(withData weatherData: WGWeatherModel?) {
         
         if let humidityValue = weatherData?.main?.humidity, let speed = weatherData?.wind?.speed {
             self.gridDataSource.append(["Humidity": "\(humidityValue)%"])
-            self.gridDataSource.append(["Wind" : "\(Int(speed))m/s"])
+            self.gridDataSource.append(["Wind" : "\(Int(speed))mph"])
             //self.gridDataSource.append(["ShowerRain" : "3m"])
         }
         

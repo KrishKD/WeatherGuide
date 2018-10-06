@@ -9,7 +9,7 @@
 import Foundation
 import MapKit
 class WGLocation {
-    var location: CLLocation?
+    var timestamp: TimeInterval?
     var weather: WGWeatherModel?
     var forecast: WGForecastModel?
 }
