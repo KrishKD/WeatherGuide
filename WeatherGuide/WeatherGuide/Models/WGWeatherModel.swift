@@ -10,6 +10,8 @@ import Foundation
 
 class WGWeatherModel: NSObject, Codable, NSCoding {
     
+    var cod: Int?
+    var message: String?
     var coord: Coordinates?
     var weather: [Weather]?
     var base: String?

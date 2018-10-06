@@ -69,8 +69,10 @@ class WGHomeVC: WGBaseVC {
                 self.tableView.reloadData()
             }
         }) { (error) in
-            self.removeProgressView()
-            //Display error
+            DispatchQueue.main.async {
+                self.removeProgressView()
+                self.showAlert(message: error)
+            }
         }
     }
     // MARK: - Navigation
