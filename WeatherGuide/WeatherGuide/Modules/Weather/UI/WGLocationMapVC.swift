@@ -22,6 +22,7 @@ class WGLocationMapVC: WGBaseVC {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.mapView.removeAnnotations(self.mapView.annotations)
         self.mapView.addGestureRecognizer(tapRecognizer)
         tapRecognizer.numberOfTapsRequired = 1
         tapRecognizer.numberOfTouchesRequired = 1
@@ -36,16 +37,18 @@ class WGLocationMapVC: WGBaseVC {
         if let gestureRecognizer = sender as? UITapGestureRecognizer, gestureRecognizer.state == .ended {
             let touchPoint = gestureRecognizer.location(in: self.mapView)
             let coordinates = self.mapView.convert(touchPoint, toCoordinateFrom: self.mapView)
-            
+            self.mapView.removeAnnotations(self.mapView.annotations)
             addAnnotationPin(atLocation: coordinates)
         }
     }
     
     @IBAction func btnAddLocationClick(_ sender: Any) {
-        if let location = self.mapView.annotations.first {
-            self.pinLocation = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        for location in self.mapView.annotations {
+            if !location.isKind(of: MKUserLocation.self) {
+                self.pinLocation = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            }
         }
-        
+
         DispatchQueue.main.async {
             self.performSegue(withIdentifier: "unWindToHomeScreen", sender: self)
         }
@@ -91,7 +94,7 @@ extension WGLocationMapVC: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let currentLoc = locations.last{
             self.currentLocation = currentLoc
-            let region = MKCoordinateRegion(center: currentLoc.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+            let region = MKCoordinateRegion(center: currentLoc.coordinate, latitudinalMeters: 10000, longitudinalMeters: 10000)
             self.mapView.setRegion(region, animated: true)
             addAnnotationPin(atLocation: currentLoc.coordinate)
         }
