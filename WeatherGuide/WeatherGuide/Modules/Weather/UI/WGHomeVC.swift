@@ -11,12 +11,13 @@ import MapKit
 
 class WGHomeVC: WGBaseVC {
 
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var viewNoLocation: UIView!
-    @IBOutlet weak var btnEdit: UIButton!
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var viewNoLocation: UIView!
+    @IBOutlet private weak var btnEdit: UIButton!
     
-    var dataSource: [WGLocation] = []
-    var viewModel: WGWeatherViewModel = WGWeatherViewModel()
+    static let dataExpiryTime: Int = 3600 //1 hour
+    private var dataSource: [WGLocation] = []
+    private var viewModel: WGWeatherViewModel = WGWeatherViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +28,8 @@ class WGHomeVC: WGBaseVC {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 50
         
+        viewModel.delegate = self
+        //Check if there are any archived data
         let locationList = viewModel.retrieveLocationData()
         
         if !locationList.isEmpty {
@@ -34,6 +37,7 @@ class WGHomeVC: WGBaseVC {
         }
     }
     
+    //Function to handle unwind segue from Map VC
     @IBAction func unwindToHome(segue: UIStoryboardSegue){
         let sourceVC = segue.source
         if let mapVC = sourceVC as? WGLocationMapVC {
@@ -41,15 +45,17 @@ class WGHomeVC: WGBaseVC {
                 let longitude = mapVC.pinLocation?.coordinate.longitude {
                 let latString = String(format: "%f", latitude)
                 let longString = String(format: "%f", longitude)
-                //fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
-                fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString), onCompletion: nil)
+                fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString),
+                                        onCompletion: nil)
             }
         }
     }
 
+    //Edit tableView rows
     @IBAction func btnEditCick(_ sender: Any) {
         tableView.isEditing = !tableView.isEditing
         
+        //Change button icon based on tableView edit status
         if let button = sender as? UIButton {
             if tableView.isEditing {
                 button.setBackgroundImage(UIImage(named: "Done"), for: .normal)
@@ -59,12 +65,14 @@ class WGHomeVC: WGBaseVC {
         }
     }
     
+    //Send params to ViewModel to fetch current weather data
     func fetchCurrentWeatherData(forCoordinates pinLocation: (lat: String, long: String),
                                  onCompletion completionHandler: (() -> Void)?) {
         let params = "lat=\(pinLocation.lat)&lon=\(pinLocation.long)&appid=\(API.key)&units=imperial"
         
         showProgressView()
         viewModel.getCurrentWeatherData(params: params, onSuccess: { (locations) in
+            //Refresh UI on main thread
             DispatchQueue.main.async {
                 self.removeProgressView()
                 self.dataSource = locations
@@ -74,6 +82,7 @@ class WGHomeVC: WGBaseVC {
                 }
             }
         }) { (error) in
+            //Remove progressView on main thread and display alert
             DispatchQueue.main.async {
                 self.removeProgressView()
                 self.showAlert(message: error)
@@ -96,12 +105,15 @@ class WGHomeVC: WGBaseVC {
     }
 }
 
+// MARK: - TableView Delegate methods
+
 extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        //Logic to show/hide Edit button and Info text.
         if !self.dataSource.isEmpty {
             viewNoLocation.isHidden = true
             btnEdit.isHidden = false
@@ -117,9 +129,9 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
         let locationcell = tableView.dequeueReusableCell(withIdentifier: "WGLocationCell", for: indexPath)
         
         if let locationcell = locationcell as? WGLocationCell {
-            locationcell.lblCityName.text = dataSource[indexPath.row].weather?.name ?? "NA"
+            locationcell.setupUI(withData: dataSource[indexPath.row].weather?.name ?? "NA") 
         }
-        //locationcell.selectionStyle = .none
+        
         return locationcell
     }
     
@@ -134,9 +146,11 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let timestamp = dataSource[indexPath.row].timestamp {
             let lastDataReceivedTimeStamp = Int(timestamp)
+            //Get current time in UTC
             let currentTimeInterval = Int(Date().timeIntervalSince1970)
             let difference = currentTimeInterval - lastDataReceivedTimeStamp
             
+            //Request for new weather data if the last received data is stale by an hour
             if difference > 3600 {
                 if let latitude = dataSource[indexPath.row].weather?.coord?.lat,
                     let longitude = dataSource[indexPath.row].weather?.coord?.lon {
@@ -145,11 +159,16 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
                     fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString)) {
                         self.performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
                     }
-                    //fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
                 }
             } else {
                 performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
             }
         }
+    }
+}
+
+extension WGHomeVC: WGWeatherViewModelProtocol {
+    func dataSaveFailed(errorMsg: String) {
+        showAlert(message: errorMsg)
     }
 }

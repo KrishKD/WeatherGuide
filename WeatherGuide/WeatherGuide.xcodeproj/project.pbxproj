@@ -12,6 +12,7 @@
 		96475E982168F1E500D43700 /* WGProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96475E952168F1E400D43700 /* WGProgressView.swift */; };
 		96475E992168F1E500D43700 /* WGBaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96475E962168F1E400D43700 /* WGBaseVC.swift */; };
 		96475E9C2168F28300D43700 /* WGExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96475E9B2168F28300D43700 /* WGExtensions.swift */; };
+		96475E9F21690D5100D43700 /* WGUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96475E9E21690D5100D43700 /* WGUtils.swift */; };
 		964879D92167F26D00C168DE /* WGHelpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964879D82167F26D00C168DE /* WGHelpVC.swift */; };
 		964879DB2167F97200C168DE /* WebFiles in Resources */ = {isa = PBXBuildFile; fileRef = 964879DA2167F97200C168DE /* WebFiles */; };
 		965CB7EC21644B77007245D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 965CB7EA21644B77007245D9 /* Main.storyboard */; };
@@ -20,7 +21,6 @@
 		965CB81821644DF3007245D9 /* WGRestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965CB81721644DF3007245D9 /* WGRestClient.swift */; };
 		965CB81B21644E43007245D9 /* WGRestClientSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965CB81A21644E43007245D9 /* WGRestClientSession.swift */; };
 		965CB81E2164505B007245D9 /* WGRestClientConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965CB81D2164505B007245D9 /* WGRestClientConstants.swift */; };
-		965CB82121645104007245D9 /* WGRestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965CB82021645104007245D9 /* WGRestError.swift */; };
 		965CB82421645261007245D9 /* WGRestClientRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965CB82321645261007245D9 /* WGRestClientRequest.swift */; };
 		965CB828216458E1007245D9 /* WGConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965CB827216458E1007245D9 /* WGConstants.swift */; };
 		96D8229A2165714500DC4F70 /* WGForecastModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D822992165714500DC4F70 /* WGForecastModel.swift */; };
@@ -44,6 +44,7 @@
 		96475E952168F1E400D43700 /* WGProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WGProgressView.swift; sourceTree = "<group>"; };
 		96475E962168F1E400D43700 /* WGBaseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WGBaseVC.swift; sourceTree = "<group>"; };
 		96475E9B2168F28300D43700 /* WGExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WGExtensions.swift; sourceTree = "<group>"; };
+		96475E9E21690D5100D43700 /* WGUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGUtils.swift; sourceTree = "<group>"; };
 		964879D82167F26D00C168DE /* WGHelpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGHelpVC.swift; sourceTree = "<group>"; };
 		964879DA2167F97200C168DE /* WebFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = WebFiles; sourceTree = "<group>"; };
 		965CB7E321644B76007245D9 /* WeatherGuide.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherGuide.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,7 +55,6 @@
 		965CB81721644DF3007245D9 /* WGRestClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGRestClient.swift; sourceTree = "<group>"; };
 		965CB81A21644E43007245D9 /* WGRestClientSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGRestClientSession.swift; sourceTree = "<group>"; };
 		965CB81D2164505B007245D9 /* WGRestClientConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGRestClientConstants.swift; sourceTree = "<group>"; };
-		965CB82021645104007245D9 /* WGRestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGRestError.swift; sourceTree = "<group>"; };
 		965CB82321645261007245D9 /* WGRestClientRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGRestClientRequest.swift; sourceTree = "<group>"; };
 		965CB827216458E1007245D9 /* WGConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGConstants.swift; sourceTree = "<group>"; };
 		96D822992165714500DC4F70 /* WGForecastModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGForecastModel.swift; sourceTree = "<group>"; };
@@ -99,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				96475E9B2168F28300D43700 /* WGExtensions.swift */,
+				96475E9E21690D5100D43700 /* WGUtils.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -177,7 +178,6 @@
 				965CB81721644DF3007245D9 /* WGRestClient.swift */,
 				965CB81A21644E43007245D9 /* WGRestClientSession.swift */,
 				965CB81D2164505B007245D9 /* WGRestClientConstants.swift */,
-				965CB82021645104007245D9 /* WGRestError.swift */,
 				965CB82321645261007245D9 /* WGRestClientRequest.swift */,
 			);
 			path = Network;
@@ -373,6 +373,7 @@
 				96D822AB216650B200DC4F70 /* WGLocation.swift in Sources */,
 				96D822A92165C9CD00DC4F70 /* WGPointAnnotation.swift in Sources */,
 				96FAADB021653A4500960829 /* WGDataManager.swift in Sources */,
+				96475E9F21690D5100D43700 /* WGUtils.swift in Sources */,
 				96D8229A2165714500DC4F70 /* WGForecastModel.swift in Sources */,
 				965CB82421645261007245D9 /* WGRestClientRequest.swift in Sources */,
 				965CB81821644DF3007245D9 /* WGRestClient.swift in Sources */,
@@ -382,7 +383,6 @@
 				96D822A02165A0A700DC4F70 /* WGWeatherVC.swift in Sources */,
 				96FAADEC21654F4400960829 /* WGWeatherModel.swift in Sources */,
 				96D8229E21659B5500DC4F70 /* WGHomeVC.swift in Sources */,
-				965CB82121645104007245D9 /* WGRestError.swift in Sources */,
 				96475E992168F1E500D43700 /* WGBaseVC.swift in Sources */,
 				96475E982168F1E500D43700 /* WGProgressView.swift in Sources */,
 				96475E9C2168F28300D43700 /* WGExtensions.swift in Sources */,
