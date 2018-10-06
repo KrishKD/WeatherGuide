@@ -25,7 +25,7 @@ class WGDataManager {
                     return
                 }
                 onFailure(erroMsg)
-            } catch let error as Error{
+            } catch let error {
                 onFailure(error.localizedDescription)
             }
         }) { (error) in
