@@ -14,6 +14,7 @@ class WGWeatherVC: WGBaseVC {
     @IBOutlet private weak var lblTemperature: UILabel!
     @IBOutlet private weak var imgWeatherStatus: UIImageView!
     @IBOutlet private var weatherGrid: UICollectionView!
+    @IBOutlet private weak var lblHLTemp: UILabel!
     
     var location: WGLocation?
     private let weatherCollectionCellId = "GridWeatherCell"
@@ -36,7 +37,7 @@ class WGWeatherVC: WGBaseVC {
 
             //Set Attribute string to Temperature label
             lblTemperature.attributedText = getAttributedStrForTempLbl(weatherData)
-            
+            lblHLTemp.attributedText = getAttributedStrForHighLowTempLbl(weatherData)
             //Setup collectionView data source
             setGridDataSource(withData: weatherData.weather)
         }
@@ -73,6 +74,16 @@ class WGWeatherVC: WGBaseVC {
         tempAttributedString.setAttributes(superScriptAttributes, range: NSMakeRange(tempAttributedString.length - 2, 2))
         
         return tempAttributedString
+    }
+    
+    func getAttributedStrForHighLowTempLbl(_ weatherData: WGLocation) -> NSMutableAttributedString {
+
+        let highTempAttributedStr = NSMutableAttributedString(string: "\(Int(weatherData.weather?.main?.temp_max ?? 0)) / ", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 30.0)])
+        let lowTempAttributedStr = NSMutableAttributedString(string: "\(Int(weatherData.weather?.main?.temp_min ?? 0))", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15.0)])
+        
+        let tempAttributeStr = NSMutableAttributedString(attributedString: highTempAttributedStr)
+        tempAttributeStr.append(lowTempAttributedStr)
+        return tempAttributeStr
     }
 }
 
