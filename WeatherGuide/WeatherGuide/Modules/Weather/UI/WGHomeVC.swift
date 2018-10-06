@@ -14,6 +14,7 @@ class WGHomeVC: WGBaseVC {
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var viewNoLocation: UIView!
     @IBOutlet private weak var btnEdit: UIButton!
+    @IBOutlet private var searchBar: UISearchBar!
     
     static let dataExpiryTime: Int = 3600 //1 hour
     private var dataSource: [WGLocation] = []
@@ -71,12 +72,15 @@ class WGHomeVC: WGBaseVC {
         let params = "lat=\(pinLocation.lat)&lon=\(pinLocation.long)&appid=\(API.key)&units=imperial"
         
         showProgressView()
-        viewModel.getCurrentWeatherData(params: params, onSuccess: { (locations) in
+        viewModel.getCurrentWeatherData(params: params, onSuccess: { [weak self] (locations) in
             //Refresh UI on main thread
             DispatchQueue.main.async {
-                self.removeProgressView()
-                self.dataSource = locations
-                self.tableView.reloadData()
+                guard let myself = self else {
+                    return
+                }
+                myself.removeProgressView()
+                myself.dataSource = locations
+                myself.tableView.reloadData()
                 if let callback = completionHandler {
                     callback()
                 }
@@ -170,5 +174,48 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
 extension WGHomeVC: WGWeatherViewModelProtocol {
     func dataSaveFailed(errorMsg: String) {
         showAlert(message: errorMsg)
+    }
+}
+
+extension WGHomeVC: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if let textField = searchBar.value(forKey: "searchField") as? UITextField {
+            let nsString = textField.text as NSString?
+            if let searchString = nsString?.replacingCharacters(in: range, with: text) {
+                viewModel.filterBySearchText(searchText: searchString) { [weak self] (locations) in
+                    DispatchQueue.main.async {
+                        guard let myself = self, let locList = locations else {
+                            return
+                        }
+                        
+                        if locList.isEmpty {
+                            myself.dataSource.removeAll()
+                        } else {
+                            myself.dataSource = locList
+                        }
+                        
+                        myself.tableView.reloadData()
+                    }
+                }
+            }
+        }
+        return true
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        if let textField = searchBar.value(forKey: "searchField") as? UITextField,
+            let searchText = textField.text, searchText == "" {
+            self.dataSource = self.viewModel.locations
+            self.tableView.reloadData()
+        }
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText == "" {
+            self.dataSource = self.viewModel.locations
+            self.tableView.reloadData()
+        }
     }
 }

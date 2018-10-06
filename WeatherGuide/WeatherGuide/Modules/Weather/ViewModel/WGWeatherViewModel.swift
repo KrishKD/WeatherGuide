@@ -21,7 +21,11 @@ class WGWeatherViewModel {
     func getCurrentWeatherData(params: String,
                                onSuccess: @escaping ([WGLocation]) -> Void,
                                onFailure: @escaping (String) -> Void) {
-        WGDataManager.getCurrentWeather(params: params, onSuccess: { (weather) in
+        WGDataManager.getCurrentWeather(params: params, onSuccess: { [weak self] (weather) in
+            
+            guard let myself = self else {
+                return
+            }
             
             var timestamp: TimeInterval?
             if let unixTimestamp = weather.dt {
@@ -30,29 +34,43 @@ class WGWeatherViewModel {
             let location = WGLocation(id: weather.id, timeStamp: timestamp, weather: weather)
             
             //Check if the datasource already has an entry with the same cityId. If yes, replace it.
-            if let duplicateItemIndex = self.locations.firstIndex(where: { $0.id == location.id }) {
-                self.locations[duplicateItemIndex] = location
+            if let duplicateItemIndex = myself.locations.firstIndex(where: { $0.id == location.id }) {
+                myself.locations[duplicateItemIndex] = location
             } else {
-                self.locations.append(location)
+                myself.locations.append(location)
             }
             
             //Archive the new data asynchronously in background thread
             DispatchQueue.global(qos: .background).async {
-                self.saveLocationData()
+                myself.saveLocationData()
             }
             
-            onSuccess(self.locations)
+            onSuccess(myself.locations)
         }) { (error) in
             onFailure(error)
         }
+    }
+    
+    func filterBySearchText(searchText: String, onSuccess: @escaping ([WGLocation]?) -> Void) {
+        
+        if self.locations.isEmpty {
+            onSuccess([])
+        }
+        let searchResults = self.locations.filter { $0.weather?.name?.lowercased().contains(searchText.lowercased()) ?? false }
+        
+        onSuccess(searchResults)
     }
     
     func removeLocationObject(atIndex index: Int) {
         self.locations.remove(at: index)
         
         //After deleting a location, archive the data asynchronously in background thread
-        DispatchQueue.global(qos: .background).async {
-            self.saveLocationData()
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            
+            guard let myself = self else {
+                return
+            }
+            myself.saveLocationData()
         }
     }
     

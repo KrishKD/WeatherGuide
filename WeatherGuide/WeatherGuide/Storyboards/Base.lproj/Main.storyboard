@@ -21,8 +21,54 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kud-KK-XiD">
+                                <rect key="frame" x="270" y="20" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="MDq-Nw-JcG"/>
+                                    <constraint firstAttribute="width" constant="40" id="UzF-VG-1x6"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="Add"/>
+                                <connections>
+                                    <segue destination="wIw-o4-5wx" kind="show" id="Giz-yR-EAc"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="su4-sA-C5X">
+                                <rect key="frame" x="225" y="20" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="BkB-gE-Anc"/>
+                                    <constraint firstAttribute="width" constant="40" id="bEV-9j-3Ul"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="Help"/>
+                                <connections>
+                                    <segue destination="WpG-lJ-QVA" kind="presentation" id="5U5-tU-qNU"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xd6-Kc-kO7">
+                                <rect key="frame" x="118" y="28" width="84" height="24"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7ys-xR-VB8">
+                                <rect key="frame" x="10" y="22.5" width="35" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="LS2-aa-fKs"/>
+                                    <constraint firstAttribute="width" constant="35" id="baw-gZ-KxF"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="Edit"/>
+                                <connections>
+                                    <action selector="btnEditCick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="65Q-dk-1n6"/>
+                                </connections>
+                            </button>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Fhd-la-Nas">
+                                <rect key="frame" x="0.0" y="62.5" width="320" height="56"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="bMm-ji-Dkw"/>
+                                </connections>
+                            </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Y7r-aq-Wrv">
-                                <rect key="frame" x="0.0" y="70" width="320" height="410"/>
+                                <rect key="frame" x="0.0" y="118.5" width="320" height="361.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="WGLocationCell" rowHeight="50" id="KWP-Tb-pIK" customClass="WGLocationCell" customModule="WeatherGuide" customModuleProvider="target">
@@ -66,39 +112,11 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="GeR-b4-HFa"/>
                                 </connections>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kud-KK-XiD">
-                                <rect key="frame" x="270" y="20" width="40" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="MDq-Nw-JcG"/>
-                                    <constraint firstAttribute="width" constant="40" id="UzF-VG-1x6"/>
-                                </constraints>
-                                <state key="normal" backgroundImage="Add"/>
-                                <connections>
-                                    <segue destination="wIw-o4-5wx" kind="show" id="Giz-yR-EAc"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xd6-Kc-kO7">
-                                <rect key="frame" x="118" y="28" width="84" height="24"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7ys-xR-VB8">
-                                <rect key="frame" x="10" y="22.5" width="35" height="35"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="LS2-aa-fKs"/>
-                                    <constraint firstAttribute="width" constant="35" id="baw-gZ-KxF"/>
-                                </constraints>
-                                <state key="normal" backgroundImage="Edit"/>
-                                <connections>
-                                    <action selector="btnEditCick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="65Q-dk-1n6"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NSD-RU-Bhe">
-                                <rect key="frame" x="0.0" y="70" width="320" height="410"/>
+                                <rect key="frame" x="0.0" y="118.5" width="320" height="361.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please add a location" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bjH-K6-Oe3">
-                                        <rect key="frame" x="16" y="187.5" width="288.5" height="35"/>
+                                        <rect key="frame" x="16" y="163.5" width="288.5" height="35"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="30"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -110,17 +128,6 @@
                                     <constraint firstItem="bjH-K6-Oe3" firstAttribute="centerY" secondItem="NSD-RU-Bhe" secondAttribute="centerY" id="a7d-Ux-uWM"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="su4-sA-C5X">
-                                <rect key="frame" x="225" y="20" width="40" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="BkB-gE-Anc"/>
-                                    <constraint firstAttribute="width" constant="40" id="bEV-9j-3Ul"/>
-                                </constraints>
-                                <state key="normal" backgroundImage="Help"/>
-                                <connections>
-                                    <segue destination="WpG-lJ-QVA" kind="presentation" id="5U5-tU-qNU"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.18039215689999999" green="0.80000000000000004" blue="0.4431372549" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -129,14 +136,17 @@
                             <constraint firstItem="7ys-xR-VB8" firstAttribute="centerY" secondItem="kud-KK-XiD" secondAttribute="centerY" id="D1Q-rs-w6O"/>
                             <constraint firstItem="7ys-xR-VB8" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="10" id="D2x-GS-Cg3"/>
                             <constraint firstAttribute="trailing" secondItem="Y7r-aq-Wrv" secondAttribute="trailing" id="Eod-Mj-3ew"/>
-                            <constraint firstItem="Y7r-aq-Wrv" firstAttribute="top" secondItem="kud-KK-XiD" secondAttribute="bottom" constant="10" id="Jkg-71-rab"/>
+                            <constraint firstItem="Fhd-la-Nas" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Ify-by-eqw"/>
                             <constraint firstItem="NSD-RU-Bhe" firstAttribute="bottom" secondItem="Y7r-aq-Wrv" secondAttribute="bottom" id="LUI-MX-4fj"/>
                             <constraint firstItem="su4-sA-C5X" firstAttribute="centerY" secondItem="kud-KK-XiD" secondAttribute="centerY" id="Ndg-vR-UHE"/>
                             <constraint firstItem="NSD-RU-Bhe" firstAttribute="leading" secondItem="Y7r-aq-Wrv" secondAttribute="leading" id="PiK-3R-tZ4"/>
+                            <constraint firstAttribute="trailing" secondItem="Fhd-la-Nas" secondAttribute="trailing" id="Qs6-EC-Fdn"/>
                             <constraint firstItem="Xd6-Kc-kO7" firstAttribute="centerY" secondItem="kud-KK-XiD" secondAttribute="centerY" id="Tyr-tC-q0X"/>
                             <constraint firstItem="NSD-RU-Bhe" firstAttribute="trailing" secondItem="Y7r-aq-Wrv" secondAttribute="trailing" id="beu-jy-P7Z"/>
                             <constraint firstAttribute="bottom" secondItem="Y7r-aq-Wrv" secondAttribute="bottom" id="dAC-G0-ICK"/>
+                            <constraint firstItem="Fhd-la-Nas" firstAttribute="top" secondItem="7ys-xR-VB8" secondAttribute="bottom" constant="5" id="dTc-lF-ISF"/>
                             <constraint firstItem="Y7r-aq-Wrv" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="gvo-GU-6ld"/>
+                            <constraint firstItem="Y7r-aq-Wrv" firstAttribute="top" secondItem="Fhd-la-Nas" secondAttribute="bottom" id="jsM-6L-XDw"/>
                             <constraint firstItem="kud-KK-XiD" firstAttribute="leading" secondItem="su4-sA-C5X" secondAttribute="trailing" constant="5" id="k0T-l5-lHy"/>
                             <constraint firstAttribute="trailing" secondItem="kud-KK-XiD" secondAttribute="trailing" constant="10" id="pmY-2m-yUN"/>
                             <constraint firstItem="kud-KK-XiD" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="20" id="xxr-cT-HLh"/>
@@ -144,6 +154,7 @@
                     </view>
                     <connections>
                         <outlet property="btnEdit" destination="7ys-xR-VB8" id="hTJ-2V-jM4"/>
+                        <outlet property="searchBar" destination="Fhd-la-Nas" id="s87-FY-Fyr"/>
                         <outlet property="tableView" destination="Y7r-aq-Wrv" id="0Ai-4s-yDP"/>
                         <outlet property="viewNoLocation" destination="NSD-RU-Bhe" id="Zgx-Kx-qfa"/>
                         <segue destination="b9v-0X-KL4" kind="show" identifier="showWeatherSegue" id="mtt-tZ-KeV"/>
@@ -233,7 +244,7 @@
                                 <rect key="frame" x="85" y="428" width="150" height="32"/>
                                 <color key="backgroundColor" red="0.18039215689999999" green="0.80000000000000004" blue="0.4431372549" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="150" id="FQA-60-CUD"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="FQA-60-CUD"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <state key="normal" title="Add Location">
@@ -422,8 +433,8 @@
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="Bez-mw-yyM"/>
-                                <exclude reference="idc-0s-PLF"/>
                                 <exclude reference="bjT-K4-kBZ"/>
+                                <exclude reference="idc-0s-PLF"/>
                                 <exclude reference="1zh-Y7-meh"/>
                                 <exclude reference="cr9-6M-2jK"/>
                                 <exclude reference="kUG-XS-O7V"/>
@@ -434,12 +445,12 @@
                                 <include reference="Bez-mw-yyM"/>
                                 <exclude reference="VaR-lF-sBo"/>
                                 <exclude reference="zSS-YE-wCn"/>
+                                <include reference="bjT-K4-kBZ"/>
+                                <exclude reference="dlx-VR-I8x"/>
                                 <include reference="2xo-jQ-nbH"/>
                                 <include reference="idc-0s-PLF"/>
                                 <exclude reference="q4s-pU-W8v"/>
                                 <exclude reference="x3m-eS-Cy0"/>
-                                <include reference="bjT-K4-kBZ"/>
-                                <exclude reference="dlx-VR-I8x"/>
                                 <include reference="1zh-Y7-meh"/>
                                 <exclude reference="79m-03-VcD"/>
                                 <exclude reference="hSB-Dm-5O2"/>
