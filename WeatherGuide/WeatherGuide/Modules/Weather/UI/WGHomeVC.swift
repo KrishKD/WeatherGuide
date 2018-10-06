@@ -26,6 +26,12 @@ class WGHomeVC: WGBaseVC {
         btnEdit.isHidden = true
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 50
+        
+        let locationList = viewModel.retrieveLocationData()
+        
+        if !locationList.isEmpty {
+            self.dataSource = locationList
+        }
     }
     
     @IBAction func unwindToHome(segue: UIStoryboardSegue){
@@ -56,15 +62,10 @@ class WGHomeVC: WGBaseVC {
         let params = "lat=\(pinLocation.lat)&lon=\(pinLocation.long)&appid=\(API.key)&units=imperial"
         
         showProgressView()
-        viewModel.getCurrentWeatherData(params: params, onSuccess: { (location) in
+        viewModel.getCurrentWeatherData(params: params, onSuccess: { (locations) in
             DispatchQueue.main.async {
                 self.removeProgressView()
-                if let duplicateItemIndex = self.dataSource.firstIndex(where: { $0.id == location.id }) {
-                    self.dataSource[duplicateItemIndex] = location
-                } else {
-                    self.dataSource.append(location)
-                }
-                
+                self.dataSource = locations
                 self.tableView.reloadData()
             }
         }) { (error) in
@@ -109,7 +110,7 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
         let locationcell = tableView.dequeueReusableCell(withIdentifier: "WGLocationCell", for: indexPath)
         
         if let locationcell = locationcell as? WGLocationCell {
-            locationcell.lblCityName.text = dataSource[indexPath.row].weather?.name
+            locationcell.lblCityName.text = dataSource[indexPath.row].weather?.name ?? "NA"
         }
         //locationcell.selectionStyle = .none
         return locationcell
@@ -118,6 +119,7 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             dataSource.remove(at: indexPath.row)
+            viewModel.removeLocationObject(atIndex: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }
