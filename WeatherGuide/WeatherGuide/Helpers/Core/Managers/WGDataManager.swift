@@ -8,30 +8,27 @@
 
 import Foundation
 class WGDataManager {
+    let client = WGRestClient<WGWeatherModel>()
+    
     //Retrieve current weather data
-    class func getCurrentWeather(params: String,
-                                 onSuccess: @escaping (WGWeatherModel) -> Void,
-                                 onFailure: @escaping (String) -> Void) {
+    func getCurrentWeather(params: String) async throws -> WGWeatherModel {
         let api = (taskType: RestRequestTask.dataTask, endPoint: API.currentWeather, parameter: params)
 
-        WGRestClient.dataRequestAPICall(api: api, onSuccess: { (response) in
-            do {
-                let jsonObject =  try JSONSerialization.jsonObject(with: response, options: [])
-                print(jsonObject)
-                
-                //Convert Data to model object
-                let weather = try JSONDecoder().decode(WGWeatherModel.self, from: response)
-                
-                guard let erroMsg = weather.message, weather.cod != nil else {
-                    onSuccess(weather)
-                    return
-                }
-                onFailure(erroMsg)
-            } catch let error {
-                onFailure(error.localizedDescription)
+        return try await withCheckedThrowingContinuation { continuation in
+            client.dataRequestAPICall(api: api) { result in
+                continuation.resume(with: self.processResponse(result))
             }
-        }) { (error) in
-            onFailure(error)
+        }
+    }
+    
+    private func processResponse<T: Decodable>(
+        _ result: Result<WGResponse<T>, WGErrorResponse>
+    ) -> Result<T, WGErrorResponse> {
+        switch result {
+        case .success(let response):
+            return .success(response.body)
+        case .failure(let error):
+            return .failure(error)
         }
     }
     

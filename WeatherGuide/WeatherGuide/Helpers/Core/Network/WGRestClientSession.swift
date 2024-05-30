@@ -8,7 +8,7 @@
 
 import Foundation
 
-class WGRestClientSession {
+final class WGRestClientSession {
     public var session: URLSession?
     public static let defaultSession: WGRestClientSession = WGRestClientSession()
     

@@ -39,15 +39,17 @@ class WGHomeVC: WGBaseVC {
     }
     
     //Function to handle unwind segue from Map VC
-    @IBAction func unwindToHome(segue: UIStoryboardSegue){
+    @IBAction func unwindToHome(segue: UIStoryboardSegue) {
         let sourceVC = segue.source
         if let mapVC = sourceVC as? WGLocationMapVC {
             if let latitude = mapVC.pinLocation?.coordinate.latitude,
                 let longitude = mapVC.pinLocation?.coordinate.longitude {
                 let latString = String(format: "%f", latitude)
                 let longString = String(format: "%f", longitude)
-                fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString),
-                                        onCompletion: nil)
+                
+                Task {
+                    await fetchCurrentWeatherData(forCoordinates: (latString, longString))
+                }
             }
         }
     }
@@ -67,29 +69,32 @@ class WGHomeVC: WGBaseVC {
     }
     
     //Send params to ViewModel to fetch current weather data
-    func fetchCurrentWeatherData(forCoordinates pinLocation: (lat: String, long: String),
-                                 onCompletion completionHandler: (() -> Void)?) {
+    func fetchCurrentWeatherData(forCoordinates pinLocation: (lat: String, long: String)) async {
         let params = "lat=\(pinLocation.lat)&lon=\(pinLocation.long)&appid=\(API.key)&units=imperial"
         
         showProgressView()
-        viewModel.getCurrentWeatherData(params: params, onSuccess: { [weak self] (locations) in
+        
+        do  {
+            let locations = try await viewModel.getCurrentWeatherData(params: params)
+            
             //Refresh UI on main thread
             DispatchQueue.main.async {
-                guard let myself = self else {
-                    return
-                }
-                myself.removeProgressView()
-                myself.dataSource = locations
-                myself.tableView.reloadData()
-                if let callback = completionHandler {
-                    callback()
-                }
+                self.removeProgressView()
+                self.dataSource = locations
+                self.tableView.reloadData()
             }
-        }) { (error) in
+            
+        } catch let error as WGErrorResponse {
             //Remove progressView on main thread and display alert
             DispatchQueue.main.async {
                 self.removeProgressView()
-                self.showAlert(message: error)
+                self.showAlert(message: error.localizedDescription)
+            }
+        } catch let error {
+            //Remove progressView on main thread and display alert
+            DispatchQueue.main.async {
+                self.removeProgressView()
+                self.showAlert(message: error.localizedDescription)
             }
         }
     }
@@ -160,7 +165,10 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
                     let longitude = dataSource[indexPath.row].weather?.coord?.lon {
                     let latString = String(format: "%f", latitude)
                     let longString = String(format: "%f", longitude)
-                    fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString)) {
+                    
+                    Task {
+                        await fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
+                        
                         self.performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
                     }
                 }

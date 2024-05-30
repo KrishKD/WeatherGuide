@@ -8,53 +8,79 @@
 
 import Foundation
 
-class WGRestClient {
-    static let defaultRestSession: WGRestClientSession = WGRestClientSession.defaultSession
-    static var dataTask: URLSessionDataTask?
+final class WGRestClient<T: Decodable> {
+    let defaultRestSession: WGRestClientSession = WGRestClientSession.defaultSession
+    var dataTask: URLSessionDataTask?
     
-    private init() {
-        //Restrict POSRestClient intialization
-    }
-    
-    internal static func apiRequest(api: APICallAttributes) -> WGRestClientRequest? {
-        
+    internal func apiRequest(api: APICallAttributes) -> WGRestClientRequest? {
         let url: String = WGURL.endpoint + api.endPoint + "?" + api.parameter
-        if let request = defaultRestSession.request(withURL: url) {
-            return request
-        } else {
+        
+        guard let request = defaultRestSession.request(withURL: url) else {
             return nil
         }
+        
+        return request
     }
     
-    public static func dataRequestAPICall(api: APICallAttributes,
-                                          onSuccess: @escaping APISuccessHandler,
-                                          onError: @escaping APIErrorHandler){
+    public func dataRequestAPICall(
+        api: APICallAttributes,
+        completion: @escaping (Result<WGResponse<T>, WGErrorResponse>) -> Void
+    ) where T : Decodable {
         //Setup Request object
         let clientRequest = apiRequest(api: api)
         
-        //Throw error if request object is not valid
-        guard let wgRequest = clientRequest, let dataRequest = wgRequest.dataRequest, let session = defaultRestSession.session else {
-            onError(RestClientErrorMessage.nullRequestObject)
-            return
+        //Throw error if request object is invalid
+        guard let wgRequest = clientRequest, 
+              let dataRequest = wgRequest.dataRequest,
+              let session = defaultRestSession.session else {
+            return completion(.failure(.invalidRequest()))
         }
         
         //Make request
         dataTask = session.dataTask(with: dataRequest, completionHandler: { (data, response, error) in
+            let response: Result<WGResponse<T>, WGErrorResponse> = self.processResponse(data: data, response: response, error: error)
             
-            if let error = error as NSError? {
-                onError(error.localizedDescription)
-            } else {
-                guard response != nil else {
-                    onError(RestClientErrorMessage.nullResponseObject)
-                    return
-                }
-                
-                if let data = data {
-                    onSuccess(data)
-                }
+            switch response {
+            case .success(let responseObject):
+                completion(.success(responseObject))
+            case .failure(let error):
+                completion(.failure(error))
             }
         })
         
         dataTask?.resume()
+    }
+    
+    private func processResponse(data: Data?, response: URLResponse?, error: Error?) -> Result<WGResponse<T>, WGErrorResponse> {
+        guard error == nil else {
+            return .failure(processError(data: data, response: response, error: error))
+        }
+        
+        guard let httpResponse = response as? HTTPURLResponse, let data else {
+            return .failure(processError(data: nil, response: nil, error: error))
+        }
+        
+        do {
+            let responseObject = try JSONDecoder().decode(T.self, from: data)
+            return .success(WGResponse(statusCode: httpResponse.statusCode,
+                                       header: httpResponse.allHeaderFields as? [String: String] ?? [:],
+                                       body: responseObject))
+        } catch let error {
+            return .failure(.jsonParseError())
+        }
+    }
+    
+    private func processError(
+        data: Data?,
+        response: URLResponse?,
+        error: Error?
+    ) -> WGErrorResponse {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            return WGErrorResponse(statusCode: nil, data: data, error: error)
+        }
+        
+        let statusCode = httpResponse.statusCode
+        
+        return .init(statusCode: statusCode, data: data, error: error)
     }
 }
