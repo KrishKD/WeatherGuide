@@ -13,42 +13,35 @@ protocol WGWeatherViewModelProtocol: class {
 }
 
 class WGWeatherViewModel {
+    let dataManager: WGDataManager = WGDataManager()
+    
     var locations: [WGLocation] = []
     private let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
     weak var delegate: WGWeatherViewModelProtocol?
     
     //Fetch current weather data
-    func getCurrentWeatherData(params: String,
-                               onSuccess: @escaping ([WGLocation]) -> Void,
-                               onFailure: @escaping (String) -> Void) {
-        WGDataManager.getCurrentWeather(params: params, onSuccess: { [weak self] (weather) in
-            
-            guard let myself = self else {
-                return
-            }
-            
-            var timestamp: TimeInterval?
-            if let unixTimestamp = weather.dt {
-                timestamp = TimeInterval(unixTimestamp)
-            }
-            let location = WGLocation(id: weather.id, timeStamp: timestamp, weather: weather)
-            
-            //Check if the datasource already has an entry with the same cityId. If yes, replace it.
-            if let duplicateItemIndex = myself.locations.firstIndex(where: { $0.id == location.id }) {
-                myself.locations[duplicateItemIndex] = location
-            } else {
-                myself.locations.append(location)
-            }
-            
-            //Archive the new data asynchronously in background thread
-            DispatchQueue.global(qos: .background).async {
-                myself.saveLocationData()
-            }
-            
-            onSuccess(myself.locations)
-        }) { (error) in
-            onFailure(error)
+    func getCurrentWeatherData(params: String) async throws -> [WGLocation] {
+        let weather = try await dataManager.getCurrentWeather(params: params)
+        
+        var timestamp: TimeInterval?
+        if let unixTimestamp = weather.dt {
+            timestamp = TimeInterval(unixTimestamp)
         }
+        let location = WGLocation(id: weather.id, timeStamp: timestamp, weather: weather)
+        
+        //Check if the datasource already has an entry with the same cityId. If yes, replace it.
+        if let duplicateItemIndex = locations.firstIndex(where: { $0.id == location.id }) {
+            locations[duplicateItemIndex] = location
+        } else {
+            locations.append(location)
+        }
+        
+        return locations
+        
+        //Archive the new data asynchronously in background thread
+//        DispatchQueue.global(qos: .background).async {
+//            myself.saveLocationData()
+//        }
     }
     
     func filterBySearchText(searchText: String, onSuccess: @escaping ([WGLocation]?) -> Void) {
