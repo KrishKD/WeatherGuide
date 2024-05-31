@@ -70,11 +70,15 @@ class WGHomeVC: WGBaseVC {
     
     //Send params to ViewModel to fetch current weather data
     func fetchCurrentWeatherData(forCoordinates pinLocation: (lat: String, long: String)) async {
-        let params = "lat=\(pinLocation.lat)&lon=\(pinLocation.long)&appid=\(API.key)&units=imperial"
-        
         showProgressView()
         
         do  {
+            let params = ["lat": pinLocation.lat,
+                          "lon": pinLocation.long,
+                          "appid": API.key,
+                          "units": "imperial",
+                          "exclude": "hourly,minutely,alerts"]
+            
             let locations = try await viewModel.getCurrentWeatherData(params: params)
             
             //Refresh UI on main thread
@@ -138,7 +142,8 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
         let locationcell = tableView.dequeueReusableCell(withIdentifier: "WGLocationCell", for: indexPath)
         
         if let locationcell = locationcell as? WGLocationCell {
-            locationcell.setupUI(withData: dataSource[indexPath.row].weather?.name ?? "NA") 
+            //TODO
+            locationcell.setupUI(withData: /*dataSource[indexPath.row].weather?.name ??*/ "NA")
         }
         
         return locationcell
@@ -161,16 +166,13 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
             
             //Request for new weather data if the last received data is stale by an hour
             if difference > 3600 {
-                if let latitude = dataSource[indexPath.row].weather?.coord?.lat,
-                    let longitude = dataSource[indexPath.row].weather?.coord?.lon {
-                    let latString = String(format: "%f", latitude)
-                    let longString = String(format: "%f", longitude)
+                let latString = String(describing: dataSource[indexPath.row].latitude)
+                let longString = String(describing: dataSource[indexPath.row].longtitude)
+                
+                Task {
+                    await fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
                     
-                    Task {
-                        await fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
-                        
-                        self.performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
-                    }
+                    self.performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
                 }
             } else {
                 performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))

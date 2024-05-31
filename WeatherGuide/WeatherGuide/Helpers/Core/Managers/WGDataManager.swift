@@ -8,11 +8,11 @@
 
 import Foundation
 class WGDataManager {
-    let client = WGRestClient<WGWeatherModel>()
+    let client = WGRestClient<WGWeather>()
     
     //Retrieve current weather data
-    func getCurrentWeather(params: String) async throws -> WGWeatherModel {
-        let api = (taskType: RestRequestTask.dataTask, endPoint: API.currentWeather, parameter: params)
+    func getCurrentWeather(params: [String: Any?]) async throws -> WGWeather {
+        let api = (endPoint: API.currentWeather, parameter: params)
 
         return try await withCheckedThrowingContinuation { continuation in
             client.dataRequestAPICall(api: api) { result in

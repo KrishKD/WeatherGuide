@@ -19,39 +19,27 @@ enum WeatherStatus: String {
     case thunderstorm = "thunderstorm"
     case snow = "Snow"
     case mist = "Mist"
-}
-
-class WGUtils {
-    //Set imageName based on weather condition
-    static func setWeatherStatusImage(weatherCondition: String?) -> String {
-        var imageName = "ScatteredClouds"
-        if let weatherDescription = weatherCondition {
-            switch weatherDescription {
-            case WeatherStatus.clearSky.rawValue:
-                imageName = "ClearSky"
-            case WeatherStatus.cloudy.rawValue:
-                imageName = "PartlyCloudy"
-            case WeatherStatus.scatterredClouds.rawValue:
-                imageName = "ScatteredClouds"
-            case WeatherStatus.overcastClouds.rawValue:
-                imageName = "BrokenClouds"
-            case WeatherStatus.brokenClouds.rawValue:
-                imageName = "BrokenClouds"
-            case WeatherStatus.shower.rawValue:
-                imageName = "ShowerRain"
-            case WeatherStatus.rain.rawValue:
-                imageName = "Rain"
-            case WeatherStatus.thunderstorm.rawValue:
-                imageName = "Thunderstorm"
-            case WeatherStatus.snow.rawValue:
-                imageName = "Snow"
-            case WeatherStatus.mist.rawValue:
-                imageName = "Mist"
-            default:
-                imageName = "ScatteredClouds"
-            }
+    
+    var statusImage: String {
+        switch self {
+        case .clearSky:
+            return "ClearSky"
+        case .cloudy:
+            return "PartlyCloudy"
+        case .scatterredClouds:
+            return "ScatteredClouds"
+        case .overcastClouds, .brokenClouds:
+            return "BrokenClouds"
+        case .shower:
+            return "ShowerRain"
+        case .rain:
+            return "Rain"
+        case .thunderstorm:
+            return "Thunderstorm"
+        case .snow:
+            return "Snow"
+        case .mist:
+            return "Mist"
         }
-        return imageName
     }
 }
-

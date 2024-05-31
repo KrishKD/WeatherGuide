@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol WGWeatherViewModelProtocol: class {
+protocol WGWeatherViewModelProtocol: AnyObject {
     func dataSaveFailed(errorMsg: String)
 }
 
@@ -20,17 +20,16 @@ class WGWeatherViewModel {
     weak var delegate: WGWeatherViewModelProtocol?
     
     //Fetch current weather data
-    func getCurrentWeatherData(params: String) async throws -> [WGLocation] {
+    func getCurrentWeatherData(params: [String: Any?]) async throws -> [WGLocation] {
         let weather = try await dataManager.getCurrentWeather(params: params)
         
-        var timestamp: TimeInterval?
-        if let unixTimestamp = weather.dt {
-            timestamp = TimeInterval(unixTimestamp)
-        }
-        let location = WGLocation(id: weather.id, timeStamp: timestamp, weather: weather)
+        let unixTimestamp = weather.current.dt
+        let timestamp = TimeInterval(unixTimestamp)
+        
+        let location = WGLocation(with: weather)
         
         //Check if the datasource already has an entry with the same cityId. If yes, replace it.
-        if let duplicateItemIndex = locations.firstIndex(where: { $0.id == location.id }) {
+        if let duplicateItemIndex = locations.firstIndex(where: { $0 == location }) {
             locations[duplicateItemIndex] = location
         } else {
             locations.append(location)
@@ -49,9 +48,12 @@ class WGWeatherViewModel {
         if self.locations.isEmpty {
             onSuccess([])
         }
-        let searchResults = self.locations.filter { $0.weather?.name?.lowercased().contains(searchText.lowercased()) ?? false }
         
-        onSuccess(searchResults)
+        // TODO
+        /*
+        let searchResults = self.locations.filter { $0.weather?.name?.lowercased().contains(searchText.lowercased()) ?? false }
+        */
+        onSuccess([])
     }
     
     func removeLocationObject(atIndex index: Int) {

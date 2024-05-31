@@ -21,15 +21,22 @@ final class WGRestClientSession {
     }
     
     //Configure URLRequest
-    public func request(withURL url: String) -> WGRestClientRequest? {
-        if let url = URL(string: url), let session = session {
-            let request = URLRequest(url: url,
-                                     cachePolicy: session.configuration.requestCachePolicy,
-                                     timeoutInterval: session.configuration.timeoutIntervalForRequest)
-            
-            return WGRestClientRequest(request: request)
-        } else {
+    public func request(withURL url: String, params: [String: Any?]) -> WGRestClientRequest? {
+        guard var components = URLComponents(string: url), let session = session else {
             return nil
         }
+        
+        let queryItems = APIHelper.mapValuesToQueryParams(params)
+        if !queryItems.isEmpty {
+            components.queryItems = queryItems
+        }
+        
+        guard let url = components.url else { return nil }
+        
+        let request = URLRequest(url: url,
+                                 cachePolicy: session.configuration.requestCachePolicy,
+                                 timeoutInterval: session.configuration.timeoutIntervalForRequest)
+        
+        return WGRestClientRequest(request: request)
     }
 }

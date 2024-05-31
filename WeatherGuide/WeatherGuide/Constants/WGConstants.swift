@@ -9,11 +9,10 @@
 import Foundation
 
 struct WGURL {
-    static let endpoint: String = "http://api.openweathermap.org/data/2.5/"
+    static let endpoint: String = "https://api.openweathermap.org/data/3.0/"
 }
 
 struct API {
-    static let key: String = "9b33cf970785e69d5643d66da28e5117"
-    static let currentWeather: String = "weather"
-    static let forecast: String = "forecast"
+    static let key: String = "497358898c20ed18f085bd4ecc7c17c4"
+    static let currentWeather: String = "onecall"
 }
