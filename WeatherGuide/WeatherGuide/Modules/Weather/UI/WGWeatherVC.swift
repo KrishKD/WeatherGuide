@@ -29,11 +29,14 @@ class WGWeatherVC: WGBaseVC {
 
         // Do any additional setup after loading the view.
         if let weatherData = location {
-            lblCity.text = weatherData.weather?.name
+            //TODO
+            lblCity.text = "CA"//weatherData.weather?.name
             
             //Get image based on weather condition status
-            let imageName = WGUtils.setWeatherStatusImage(weatherCondition: self.location?.weather?.weather?.first?.main)
-            imgWeatherStatus.image = UIImage(named: imageName)
+            if let status = self.location?.weather?.current.weather.first?.main,
+               let weatherStatus = WeatherStatus(rawValue: status) {
+                imgWeatherStatus.image = UIImage(named: weatherStatus.statusImage)
+            }
 
             //Set Attribute string to Temperature label
             lblTemperature.attributedText = getAttributedStrForTempLbl(weatherData)
@@ -43,18 +46,20 @@ class WGWeatherVC: WGBaseVC {
         }
     }
     
-    func setGridDataSource(withData weatherData: WGWeatherModel?) {
-        if let humidityValue = weatherData?.main?.humidity, let speed = weatherData?.wind?.speed {
-            self.gridDataSource.append(["Humidity": "\(humidityValue)%"])
-            self.gridDataSource.append(["Wind" : "\(Int(speed))mph"])
+    func setGridDataSource(withData weather: WGWeather?) {
+        guard let weatherInfo = weather else { return }
+        
+        let windSpeed = weatherInfo.current.windSpeed.intValue
+        
+        self.gridDataSource.append(["Humidity": "\(weatherInfo.current.humidity)%"])
+        self.gridDataSource.append(["Wind" : "\(windSpeed) mph"])
+        
+        if let rain = weatherInfo.current.rain  {
+            self.gridDataSource.append(["ShowerRain" : "\(rain.intValue)"])
         }
         
-        if let rain = weatherData?.rain, let value = rain["3h"] {
-            self.gridDataSource.append(["ShowerRain" : "\(value)"])
-        }
-        
-        if let snow = weatherData?.snow, let value = snow["3h"] {
-            self.gridDataSource.append(["Snow" : "\(value)"])
+        if let snow = weatherInfo.current.snow {
+            self.gridDataSource.append(["Snow" : "\(snow.intValue)"])
         }
     }
 
@@ -65,7 +70,7 @@ class WGWeatherVC: WGBaseVC {
     //Format temperature string
     func getAttributedStrForTempLbl(_ weatherData: WGLocation) -> NSMutableAttributedString {
         //Set font size
-        let tempAttributedString = NSMutableAttributedString(string: "\(Int(weatherData.weather?.main?.temp ?? 0))°F", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 70.0)])
+        let tempAttributedString = NSMutableAttributedString(string: "\(weatherData.weather?.current.temp.intValue ?? 0))°F", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 70.0)])
         
         //Setup superscript attribute
         let superScriptAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 40.0), NSAttributedString.Key.baselineOffset: 20]
@@ -77,9 +82,18 @@ class WGWeatherVC: WGBaseVC {
     }
     
     func getAttributedStrForHighLowTempLbl(_ weatherData: WGLocation) -> NSMutableAttributedString {
-
-        let highTempAttributedStr = NSMutableAttributedString(string: "\(Int(weatherData.weather?.main?.temp_max ?? 0)) / ", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 30.0)])
-        let lowTempAttributedStr = NSMutableAttributedString(string: "\(Int(weatherData.weather?.main?.temp_min ?? 0))", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15.0)])
+        let maxTemperature = weatherData.weather?.daily.first?.temp.max.intValue ?? 0
+        let minTemperature = weatherData.weather?.daily.first?.temp.min.intValue ?? 0
+        
+        let highTempAttributedStr = NSMutableAttributedString(
+            string: "\(maxTemperature)) / ",
+            attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 30.0)]
+        )
+        
+        let lowTempAttributedStr = NSMutableAttributedString(
+            string: "\(minTemperature))",
+            attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15.0)]
+        )
         
         let tempAttributeStr = NSMutableAttributedString(attributedString: highTempAttributedStr)
         tempAttributeStr.append(lowTempAttributedStr)

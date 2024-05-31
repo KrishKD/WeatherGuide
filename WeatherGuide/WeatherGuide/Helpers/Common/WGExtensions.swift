@@ -19,3 +19,9 @@ extension ShowAlert where Self: UIViewController {
 }
 
 extension UIViewController: ShowAlert {}
+
+extension Decimal {
+    var intValue: Int {
+        NSDecimalNumber(decimal: self).intValue
+    }
+}

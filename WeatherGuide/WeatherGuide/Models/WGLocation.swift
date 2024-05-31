@@ -8,33 +8,23 @@
 
 import Foundation
 import MapKit
-class WGLocation: NSObject, NSCoding {
 
-    var id: Int?
+struct WGLocation {
+    let latitude: Float
+    let longtitude: Float
     var timestamp: TimeInterval?
-    var weather: WGWeatherModel?
-    var forecast: WGForecastModel?
+    var weather: WGWeather?
     
-    private let idDef = "id"
-    private let timestampDef = "timestamp"
-    private let weatherDef = "weather"
-    
-    func encode(with aCoder: NSCoder) {
-        aCoder.encode(id, forKey: idDef)
-        aCoder.encode(timestamp, forKey: timestampDef)
-        aCoder.encode(weather, forKey: weatherDef)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        id = aDecoder.decodeObject(forKey: idDef) as? Int
-        timestamp  = aDecoder.decodeObject(forKey: timestampDef) as? TimeInterval
-        weather = aDecoder.decodeObject(forKey: weatherDef) as? WGWeatherModel
-    }
-    
-    init(id: Int?, timeStamp: TimeInterval?, weather: WGWeatherModel?) {
-        self.id = id
-        self.timestamp = timeStamp
+    init(with weather: WGWeather) {
         self.weather = weather
-        super.init()
+        self.latitude = weather.latitude
+        self.longtitude = weather.longitude
+        self.timestamp = TimeInterval(weather.current.dt)
     }
+}
+
+extension WGLocation: Equatable {
+    static func == (lhs: WGLocation, rhs: WGLocation) -> Bool {
+        return lhs.latitude == rhs.latitude && lhs.longtitude == rhs.longtitude
+    }    
 }

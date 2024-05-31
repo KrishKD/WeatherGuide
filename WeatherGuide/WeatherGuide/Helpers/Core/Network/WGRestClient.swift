@@ -13,9 +13,9 @@ final class WGRestClient<T: Decodable> {
     var dataTask: URLSessionDataTask?
     
     internal func apiRequest(api: APICallAttributes) -> WGRestClientRequest? {
-        let url: String = WGURL.endpoint + api.endPoint + "?" + api.parameter
+        let url: String = WGURL.endpoint + api.endPoint
         
-        guard let request = defaultRestSession.request(withURL: url) else {
+        guard let request = defaultRestSession.request(withURL: url, params: api.parameter) else {
             return nil
         }
         
@@ -56,8 +56,8 @@ final class WGRestClient<T: Decodable> {
             return .failure(processError(data: data, response: response, error: error))
         }
         
-        guard let httpResponse = response as? HTTPURLResponse, let data else {
-            return .failure(processError(data: nil, response: nil, error: error))
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data else {
+            return .failure(processError(data: data, response: response, error: error))
         }
         
         do {
