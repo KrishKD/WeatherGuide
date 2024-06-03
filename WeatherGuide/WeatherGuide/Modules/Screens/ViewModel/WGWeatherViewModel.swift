@@ -28,6 +28,8 @@ class WGWeatherViewModel {
         
         let location = WGLocation(with: weather)
         
+        let vm = CurrentWeatherViewModel(location: location)
+        
         //Check if the datasource already has an entry with the same cityId. If yes, replace it.
         if let duplicateItemIndex = locations.firstIndex(where: { $0 == location }) {
             locations[duplicateItemIndex] = location

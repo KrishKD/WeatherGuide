@@ -23,23 +23,23 @@ enum WeatherStatus: String {
     var statusImage: String {
         switch self {
         case .clearSky:
-            return "ClearSky"
+            return "sun.max"
         case .cloudy:
-            return "PartlyCloudy"
+            return "cloud.sun"
         case .scatterredClouds:
-            return "ScatteredClouds"
+            return "cloud"
         case .overcastClouds, .brokenClouds:
-            return "BrokenClouds"
+            return "smoke"
         case .shower:
-            return "ShowerRain"
+            return "cloud.drizzle"
         case .rain:
-            return "Rain"
+            return "cloud.rain"
         case .thunderstorm:
-            return "Thunderstorm"
+            return "cloud.bolt.rain"
         case .snow:
-            return "Snow"
+            return "snowflake"
         case .mist:
-            return "Mist"
+            return "sun.haze"
         }
     }
 }

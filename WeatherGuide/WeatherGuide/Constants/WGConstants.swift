@@ -16,3 +16,16 @@ struct API {
     static let key: String = "Setup API key in https://home.openweathermap.org/api_keys"
     static let currentWeather: String = "onecall"
 }
+
+class WGSpacer {
+    static let xxs: CGFloat = 2.0
+    static let xs: CGFloat = 4.0
+    static let small: CGFloat = 8.0
+    static let medium: CGFloat = 16.0
+    static let large: CGFloat = 32.0
+    static let extraLarge: CGFloat = 64.0
+}
+
+struct Strings {
+    static let temperatureSymbol = "°F"
+}

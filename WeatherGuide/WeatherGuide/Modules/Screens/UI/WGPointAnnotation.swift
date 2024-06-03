@@ -8,6 +8,15 @@
 
 import UIKit
 import MapKit
+import SwiftUI
+
 class WGPointAnnotation: MKPointAnnotation {
     var pinImageName: String?
+}
+
+struct PinAnnotation: Identifiable {
+    let coordinates: CLLocationCoordinate2D
+    var id: Int {
+        return Hasher().finalize()
+    }
 }
