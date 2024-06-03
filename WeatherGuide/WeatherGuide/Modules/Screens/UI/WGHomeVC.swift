@@ -172,12 +172,24 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
                 Task {
                     await fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
                     
-                    self.performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
+                    let location = self.dataSource[indexPath.row]
+                    displayCurrentWeather(for: location)
+                    
+                    // self.performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
                 }
             } else {
-                performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
+                let location = self.dataSource[indexPath.row]
+                displayCurrentWeather(for: location)
+                //performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
             }
         }
+    }
+    
+    func displayCurrentWeather(for location: WGLocation) {
+        let viewModel = CurrentWeatherViewModel(location: location)
+        let currentWeatherVC: CurrentWeatherViewController = .init(viewModel: viewModel)
+        
+        navigationController?.pushViewController(currentWeatherVC, animated: true)
     }
 }
 
