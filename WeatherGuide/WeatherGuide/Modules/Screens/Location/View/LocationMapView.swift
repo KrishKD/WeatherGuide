@@ -10,28 +10,48 @@ import SwiftUI
 import MapKit
 
 struct LocationMapView: View {
-    var viewModel: LocationMapViewModel
+    @ObservedObject var viewModel: LocationMapViewModel
+    @State var region: MKCoordinateRegion
     
-    var body: some View {
-        map
-            .overlay(alignment: .bottom) {
-                addLocationButton
-            }
+    init(with viewModel: LocationMapViewModel) {
+        self.viewModel = viewModel
+        _region = State(initialValue: .init(
+            center: .init(latitude: 34.13024, longitude: -84.22762),
+            latitudinalMeters: 1000,
+            longitudinalMeters: 1000
+        ))
     }
     
-    var map: some View {
-        Map(
-            coordinateRegion: viewModel.viewState.$coordinateRegion,
-            showsUserLocation: true,
-            annotationItems: viewModel.viewState.annotations) { item in
-                MapMarker(coordinate: item.coordinates, tint: Color("Mauve", bundle: Bundle.main))
+    var body: some View {
+        MapReader { reader in
+            map
+                .onTapGesture(perform: { touchPoint in
+                    if let coordinates = reader.convert(touchPoint, from: .local) {
+                        viewModel.updateAnnotation(with: coordinates)
+                    }
+                })
+                .overlay(alignment: .bottom) {
+                    addLocationButton
+                }
+                .onAppear {
+                    viewModel.fetchCurrentLocation()
+                }
+        }
+    }
+    
+    var map: some View { 
+        Map(position: viewModel.binding) {
+            ForEach(viewModel.annotations, id: \.id) { item in
+                Marker("", coordinate: item.coordinates)
+                    .tint(Color("Mauve", bundle: Bundle.main))
             }
+        }
     }
     
     @ViewBuilder
     var addLocationButton: some View {
         Button {
-            
+            viewModel.addLocation()
         } label: {
             Text("Add Location")
                 .bold()
@@ -47,24 +67,11 @@ struct LocationMapView: View {
 
 struct LocationMapView_Preview: PreviewProvider {
     static var previews: some View {
-        let region: MKCoordinateRegion = .init(
-            center: .init(latitude: 37.6193, longitude: 122.3816),
-            latitudinalMeters: 1000,
-            longitudinalMeters: 1000
-        )
-        
-        let annotation: [PinAnnotation] = [
-            PinAnnotation(coordinates: .init(
-                latitude: 37.6193, longitude: 122.3816)
-            )
-        ]
-        
-        let viewModel = LocationMapViewModel(viewState: .init(coordinateRegion: region, annotations: annotation))
         
         ForEach(ColorScheme.allCases,
                 id: \.self,
                 content:
-            LocationMapView(viewModel: viewModel)
+                    LocationMapView(with: .init())
                 .preferredColorScheme
         )
     }

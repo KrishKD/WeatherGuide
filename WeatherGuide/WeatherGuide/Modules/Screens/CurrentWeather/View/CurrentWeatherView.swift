@@ -10,7 +10,7 @@ import SwiftUI
 import WGSwiftUI
 
 struct CurrentWeatherView: View {
-    let viewModel: CurrentWeatherViewModel
+    @ObservedObject var viewModel: CurrentWeatherViewModel
     
     var body: some View {
         ZStack {
