@@ -16,6 +16,7 @@ class WGHomeVC: WGBaseVC {
     @IBOutlet private weak var btnEdit: UIButton!
     @IBOutlet private var searchBar: UISearchBar!
     
+    @IBOutlet weak var addLocationButton: UIButton!
     static let dataExpiryTime: Int = 3600 //1 hour
     private var dataSource: [WGLocation] = []
     private var viewModel: WGWeatherViewModel = WGWeatherViewModel()
@@ -38,20 +39,13 @@ class WGHomeVC: WGBaseVC {
         }
     }
     
-    //Function to handle unwind segue from Map VC
-    @IBAction func unwindToHome(segue: UIStoryboardSegue) {
-        let sourceVC = segue.source
-        if let mapVC = sourceVC as? WGLocationMapVC {
-            if let latitude = mapVC.pinLocation?.coordinate.latitude,
-                let longitude = mapVC.pinLocation?.coordinate.longitude {
-                let latString = String(format: "%f", latitude)
-                let longString = String(format: "%f", longitude)
-                
-                Task {
-                    await fetchCurrentWeatherData(forCoordinates: (latString, longString))
-                }
+    @IBAction func addLocationBtnClick(_ sender: Any) {
+        let locationVC: LocationViewController = .init { [weak self] location in
+            Task {
+                await self?.fetchData(for: location)
             }
         }
+        navigationController?.present(locationVC, animated: true)
     }
 
     //Edit tableView rows
@@ -66,6 +60,13 @@ class WGHomeVC: WGBaseVC {
                 button.setBackgroundImage(UIImage(named: "Edit"), for: .normal)
             }
         }
+    }
+    
+    func fetchData(for location: CLLocation) async {
+        let lat = String(location.coordinate.latitude)
+        let long = String(location.coordinate.longitude)
+        
+        await fetchCurrentWeatherData(forCoordinates: (lat, long))
     }
     
     //Send params to ViewModel to fetch current weather data
@@ -174,13 +175,10 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
                     
                     let location = self.dataSource[indexPath.row]
                     displayCurrentWeather(for: location)
-                    
-                    // self.performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
                 }
             } else {
                 let location = self.dataSource[indexPath.row]
                 displayCurrentWeather(for: location)
-                //performSegue(withIdentifier: "showWeatherSegue", sender: tableView.cellForRow(at: indexPath))
             }
         }
     }

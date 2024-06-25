@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import SwiftUI
 
-class CurrentWeatherViewModel {
+class CurrentWeatherViewModel: NSObject, ObservableObject {
     struct ViewState {
         public let currentTemperature: AttributedString
         let maximumTemperature: AttributedString
@@ -22,8 +22,9 @@ class CurrentWeatherViewModel {
         let windSpeed: String
     }
     
-    let viewState: ViewState
+    @Published var viewState: ViewState
     private let location: WGLocation
+    private var cancellable: Set<AnyCancellable> = []
     
     init(location: WGLocation) {
         self.location = location
@@ -53,8 +54,6 @@ class CurrentWeatherViewModel {
             windSpeed: "\(windSpeed) mph"
         )
     }
-    
-    func bind() {
-        
-    }
 }
+
+

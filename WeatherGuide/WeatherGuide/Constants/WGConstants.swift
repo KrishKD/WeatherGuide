@@ -13,7 +13,7 @@ struct WGURL {
 }
 
 struct API {
-    static let key: String = "Setup API key in https://home.openweathermap.org/api_keys"
+    static let key: String = "497358898c20ed18f085bd4ecc7c17c4"
     static let currentWeather: String = "onecall"
 }
 

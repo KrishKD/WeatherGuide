@@ -8,10 +8,13 @@
 
 import UIKit
 import SwiftUI
+import Combine
 
 class CurrentWeatherViewController: UIViewController {
 
-    let viewModel: CurrentWeatherViewModel
+    @ObservedObject var viewModel: CurrentWeatherViewModel
+    private var cancellables: Set<AnyCancellable> = []
+    
     private lazy var hostingViewController: UIHostingController = {
         let controller: UIHostingController = .init(
             rootView: CurrentWeatherView(viewModel: viewModel)
