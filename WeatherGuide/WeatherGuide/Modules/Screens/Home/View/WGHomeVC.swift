@@ -8,87 +8,95 @@
 
 import UIKit
 import MapKit
+import SwiftUI
+import Combine
 
 class WGHomeVC: WGBaseVC {
-
-    @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var viewNoLocation: UIView!
-    @IBOutlet private weak var btnEdit: UIButton!
-    @IBOutlet private var searchBar: UISearchBar!
-    
-    @IBOutlet weak var addLocationButton: UIButton!
     static let dataExpiryTime: Int = 3600 //1 hour
     private var dataSource: [WGLocation] = []
     private var viewModel: WGWeatherViewModel = WGWeatherViewModel()
+    private var homeVM: HomeViewModel = HomeViewModel(viewState: .init(locations: []))
+    private var cancellable: Set<AnyCancellable> = []
+    
+    private lazy var hostingViewController: UIHostingController = {
+        let host = UIHostingController(rootView: HomeView(viewModel: homeVM))
+        host.view.translatesAutoresizingMaskIntoConstraints = false
+        return host
+    }()
+    
+    private lazy var addLocationButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: UIImage(systemName: "plus"),
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(addLocationBtnClick(_:)))
+        return button
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        viewNoLocation.isHidden = true
-        btnEdit.isHidden = true
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 50
+        self.view.backgroundColor = .white
+        navigationController?.navigationBar.barTintColor = UIColor(named: "Muave")
+        navigationItem.rightBarButtonItem = addLocationButton
+        addChild(hostingViewController)
+        view.addSubview(hostingViewController.view)
+        hostingViewController.didMove(toParent: self)
         
-        viewModel.delegate = self
         //Check if there are any archived data
         let locationList = viewModel.retrieveLocationData()
         
-        if !locationList.isEmpty {
-            self.dataSource = locationList
-        }
+        configureLayout()
     }
     
-    @IBAction func addLocationBtnClick(_ sender: Any) {
-        let locationVC: LocationViewController = .init { [weak self] location in
-            Task {
-                await self?.fetchData(for: location)
-            }
-        }
-        navigationController?.present(locationVC, animated: true)
+    // MARK: - Initializer
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
     }
-
-    //Edit tableView rows
-    @IBAction func btnEditCick(_ sender: Any) {
-        tableView.isEditing = !tableView.isEditing
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Layout
+    
+    func configureLayout() {
+        NSLayoutConstraint.activate([
+            hostingViewController.view.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            self.view.rightAnchor.constraint(equalTo: hostingViewController.view.rightAnchor),
+            self.view.bottomAnchor.constraint(equalTo: hostingViewController.view.bottomAnchor),
+            hostingViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor)
+        ])
+    }
+    
+    @objc
+    func addLocationBtnClick(_ sender: Any) {
+        let locationVC: LocationViewController = .init()
+        locationVC.dismissPublisher
+            .sink(receiveValue: { [weak self] location in
+                Task {
+                    await self?.fetchData(for: location)
+                }
+            })
+            .store(in: &cancellable)
         
-        //Change button icon based on tableView edit status
-        if let button = sender as? UIButton {
-            if tableView.isEditing {
-                button.setBackgroundImage(UIImage(named: "Done"), for: .normal)
-            } else {
-                button.setBackgroundImage(UIImage(named: "Edit"), for: .normal)
-            }
-        }
+        navigationController?.present(locationVC, animated: true)
     }
     
     func fetchData(for location: CLLocation) async {
         let lat = String(location.coordinate.latitude)
         let long = String(location.coordinate.longitude)
         
-        await fetchCurrentWeatherData(forCoordinates: (lat, long))
-    }
-    
-    //Send params to ViewModel to fetch current weather data
-    func fetchCurrentWeatherData(forCoordinates pinLocation: (lat: String, long: String)) async {
-        showProgressView()
+        let city = await homeVM.getAddress(for: location)
         
-        do  {
-            let params = ["lat": pinLocation.lat,
-                          "lon": pinLocation.long,
-                          "appid": API.key,
-                          "units": "imperial",
-                          "exclude": "hourly,minutely,alerts"]
-            
-            let locations = try await viewModel.getCurrentWeatherData(params: params)
+        do {
+            try await homeVM.getWeatherData(for: lat, longitude: long, city: city)
             
             //Refresh UI on main thread
             DispatchQueue.main.async {
                 self.removeProgressView()
-                self.dataSource = locations
-                self.tableView.reloadData()
             }
-            
         } catch let error as WGErrorResponse {
             //Remove progressView on main thread and display alert
             DispatchQueue.main.async {
@@ -103,61 +111,11 @@ class WGHomeVC: WGBaseVC {
             }
         }
     }
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-        if segue.identifier == "showWeatherSegue", let destinationVC = segue.destination as? WGWeatherVC {
-            if let cell = sender as? UITableViewCell,
-                let indexPath = self.tableView.indexPath(for: cell)
-            {
-                destinationVC.location = self.dataSource[indexPath.row]
-            }
-        }
-    }
 }
 
 // MARK: - TableView Delegate methods
 
-extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //Logic to show/hide Edit button and Info text.
-        if !self.dataSource.isEmpty {
-            viewNoLocation.isHidden = true
-            btnEdit.isHidden = false
-            return self.dataSource.count
-        } else {
-            btnEdit.isHidden = true
-            viewNoLocation.isHidden = false
-            return 0
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let locationcell = tableView.dequeueReusableCell(withIdentifier: "WGLocationCell", for: indexPath)
-        
-        if let locationcell = locationcell as? WGLocationCell {
-            //TODO
-            locationcell.setupUI(withData: /*dataSource[indexPath.row].weather?.name ??*/ "NA")
-        }
-        
-        return locationcell
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            dataSource.remove(at: indexPath.row)
-            viewModel.removeLocationObject(atIndex: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-        }
-    }
-    
+/*extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let timestamp = dataSource[indexPath.row].timestamp {
             let lastDataReceivedTimeStamp = Int(timestamp)
@@ -167,11 +125,9 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
             
             //Request for new weather data if the last received data is stale by an hour
             if difference > 3600 {
-                let latString = String(describing: dataSource[indexPath.row].latitude)
-                let longString = String(describing: dataSource[indexPath.row].longtitude)
-                
                 Task {
-                    await fetchCurrentWeatherData(forCoordinates: (lat: latString, long: longString))
+                    await fetchData(for: .init(latitude: CLLocationDegrees(dataSource[indexPath.row].latitude),
+                                               longitude: CLLocationDegrees(dataSource[indexPath.row].longtitude)))
                     
                     let location = self.dataSource[indexPath.row]
                     displayCurrentWeather(for: location)
@@ -189,7 +145,7 @@ extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
         
         navigationController?.pushViewController(currentWeatherVC, animated: true)
     }
-}
+}*/
 
 extension WGHomeVC: WGWeatherViewModelProtocol {
     func dataSaveFailed(errorMsg: String) {
@@ -197,7 +153,7 @@ extension WGHomeVC: WGWeatherViewModelProtocol {
     }
 }
 
-extension WGHomeVC: UISearchBarDelegate {
+/*extension WGHomeVC: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if let textField = searchBar.value(forKey: "searchField") as? UITextField {
@@ -238,4 +194,4 @@ extension WGHomeVC: UISearchBarDelegate {
             self.tableView.reloadData()
         }
     }
-}
+}*/
