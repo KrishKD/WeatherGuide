@@ -15,7 +15,10 @@ class LocationViewController: UIViewController {
 
     private var locationViewModel = LocationMapViewModel()
     private var cancellables: Set<AnyCancellable> = []
-    var onDismiss: (CLLocation) -> Void
+    private var dismissSubject = PassthroughSubject<CLLocation, Never>()
+    var dismissPublisher: AnyPublisher<CLLocation, Never> {
+        dismissSubject.eraseToAnyPublisher()
+    }
     
     private lazy var hostingViewController: UIHostingController = {
         let host = UIHostingController(rootView: LocationMapView(with: locationViewModel))
@@ -25,8 +28,7 @@ class LocationViewController: UIViewController {
     
     // MARK: - Initializer
     
-    init(onDismiss: @escaping (CLLocation) -> Void) {
-        self.onDismiss = onDismiss
+    init() {
         super.init(nibName: nil, bundle: nil)
         
         configureLayout()
@@ -51,7 +53,7 @@ class LocationViewController: UIViewController {
         locationViewModel.addLocationSubject
             .sink { [weak self] location in
                 if let location {
-                    self?.onDismiss(location)
+                    self?.dismissSubject.send(location)
                 }
                 self?.dismiss(animated: true)
             }

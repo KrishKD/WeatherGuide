@@ -28,11 +28,11 @@ class CurrentWeatherViewModel: NSObject, ObservableObject {
     
     init(location: WGLocation) {
         self.location = location
-        let currentTemperature = "\(location.weather?.current.temp.intValue ?? 0)\(Strings.temperatureSymbol)"
+        let currentTemperature = "\(location.weather?.current.temp ?? 0)\(Strings.temperatureSymbol)"
         let daily = location.weather?.daily.first
         
-        let maximumTemperature = "\( daily?.temp.max.intValue ?? 0)\(Strings.temperatureSymbol)"
-        let minimumTemperature = "\( daily?.temp.min.intValue ?? 0)\(Strings.temperatureSymbol)"
+        let maximumTemperature = "\( daily?.temp.max ?? 0)\(Strings.temperatureSymbol)"
+        let minimumTemperature = "\( daily?.temp.min ?? 0)\(Strings.temperatureSymbol)"
         let sunriseTimestamp = TimeInterval(daily?.sunrise ?? 0)
         let sunriseDate = Date(timeIntervalSinceReferenceDate: sunriseTimestamp)
         let sunriseDateString = sunriseDate.toHHmmaString(with: DefaultDateFormatter.dateformatterForhhmma())
@@ -41,7 +41,7 @@ class CurrentWeatherViewModel: NSObject, ObservableObject {
         let sunsetDateString = sunsetDate.toHHmmaString(with: DefaultDateFormatter.dateformatterForhhmma())
         let humidity = daily?.humidity
         let weatherCondition = location.weather?.current.weather.first?.desc
-        let windSpeed = location.weather?.current.windSpeed.intValue ?? 0
+        let windSpeed = location.weather?.current.windSpeed ?? 0
         
         self.viewState = .init(
             currentTemperature: currentTemperature.temperature,

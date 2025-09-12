@@ -8,18 +8,26 @@
 
 import Foundation
 import MapKit
+import CoreLocation
 
-struct WGLocation {
+struct WGLocation: Identifiable {
+    let id: UUID = UUID()
     let latitude: Float
     let longtitude: Float
     var timestamp: TimeInterval?
     var weather: WGWeather?
+    var city: String = ""
     
     init(with weather: WGWeather) {
         self.weather = weather
         self.latitude = weather.latitude
         self.longtitude = weather.longitude
         self.timestamp = TimeInterval(weather.current.dt)
+    }
+    
+    mutating
+    func update(city: String) {
+        self.city = city
     }
 }
 

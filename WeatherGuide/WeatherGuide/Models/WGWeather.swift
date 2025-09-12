@@ -28,19 +28,19 @@ struct CurrentWeather: Codable {
     let dt: Int
     let sunrise: Int
     let sunset: Int
-    let temp: Decimal
-    let feelsLike: Decimal
+    let temp: Float
+    let feelsLike: Float
     let pressure: Int
     let humidity: Int
-    let dewPoint: Decimal
-    let uvi: Decimal
+    let dewPoint: Float
+    let uvi: Float
     let clouds: Int
     let visibility: Int
-    let windSpeed: Decimal
+    let windSpeed: Float
     let windDeg: Int
-    let windGust: Decimal?
-    let rain: Decimal?
-    let snow: Decimal?
+    let windGust: Float?
+    let rain: Float?
+    let snow: Float?
     let weather: [Weather]
     
     enum CodingKeys: String, CodingKey {
@@ -72,16 +72,17 @@ struct Daily: Codable {
     let dt: Int
     let sunrise, sunset: Int
     let moonrise, moonset: Int
-    let moonPhase: Decimal
-    let summary: String
+    let moonPhase: Float
+    let summary: String?
     let temp: Temperature
     let feelsLike: FeelsLike
     let pressure, humidity: Int
     let dewPoint, windSpeed: Double
     let windDeg: Int
-    let windGust: Double
+    let windGust: Double?
     let weather: [Weather]
-    let clouds, pop: Int
+    let clouds: Int
+    let pop: Double
     let uvi: Double
 
     enum CodingKeys: String, CodingKey {
@@ -99,12 +100,12 @@ struct Daily: Codable {
 }
 
 struct Temperature: Codable {
-    let day: Decimal
-    let min: Decimal
-    let max: Decimal
-    let night: Decimal
-    let evening: Decimal
-    let morning: Decimal
+    let day: Float
+    let min: Float
+    let max: Float
+    let night: Float
+    let evening: Float
+    let morning: Float
     
     enum CodingKeys: String, CodingKey {
         case day, min, max, night
@@ -114,10 +115,10 @@ struct Temperature: Codable {
 }
 
 struct FeelsLike: Codable {
-    let day: Decimal
-    let night: Decimal
-    let evening: Decimal
-    let morning: Decimal
+    let day: Float
+    let night: Float
+    let evening: Float
+    let morning: Float
     
     enum CodingKeys: String, CodingKey {
         case day, night

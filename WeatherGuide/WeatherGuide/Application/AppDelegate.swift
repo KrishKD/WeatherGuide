@@ -16,6 +16,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let homeVC = WGHomeVC()
+        let navigationController = UINavigationController(rootViewController: homeVC)
+        navigationController.navigationBar.prefersLargeTitles = true
+
+        UINavigationBar.appearance().barTintColor = UIColor(named: "Muave")
+        // -- main app windows
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.rootViewController = navigationController
+
+        // -- main controller
+        window?.makeKeyAndVisible()
         return true
     }
 
