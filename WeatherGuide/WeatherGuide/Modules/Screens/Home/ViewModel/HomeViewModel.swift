@@ -9,7 +9,13 @@
 import Foundation
 import CoreLocation
 
-final class HomeViewModel: ObservableObject {
+protocol HomeViewModelProtocol {
+    func getAddress(for location: CLLocation) async -> String
+    func getWeatherData(for location: CLLocation) async throws
+    var selectedLocation: WGLocation? { get set }
+}
+
+final class HomeViewModel: HomeViewModelProtocol, ObservableObject {
     struct ViewState {
         var locations: [WGLocation] = []
         var isDataAvailable: Bool {
@@ -18,39 +24,29 @@ final class HomeViewModel: ObservableObject {
     }
     
     @Published var viewState: ViewState
-    private lazy var geocoder = CLGeocoder()
-    private let dataManager: WGDataManager = WGDataManager()
+    @Published var selectedLocation: WGLocation? {
+        didSet {
+            print(self)
+        }
+    }
+        
+    private let geocoder: CLGeocoder
+    private let dataManager: WGDataManager
     
-    init(viewState: ViewState) {
+    init(viewState: ViewState,
+         geocoder: CLGeocoder = CLGeocoder(),
+         dataManager: WGDataManager = WGDataManager()) {
         self.viewState = viewState
+        self.dataManager = dataManager
+        self.geocoder = geocoder
     }
     
-    func getAPIParams(for latitude: String, longitude: String) -> [String: String] {
+    private func getAPIParams(for latitude: String, longitude: String) -> [String: String] {
         return ["lat": latitude,
                 "lon": longitude,
                 "appid": API.key,
                 "units": "imperial",
                 "exclude": "hourly,minutely,alerts"]
-    }
-    
-    func getWeatherData(for latitude: String, longitude: String, city: String) async throws {
-        let params = getAPIParams(for: latitude, longitude: longitude)
-        
-        let weather = try await dataManager.getCurrentWeather(params: params)
-        
-        var location = WGLocation(with: weather)
-        location.update(city: city)
-        
-        //Check if the datasource already has an entry with the same cityId. If yes, replace it.
-        if let duplicateItemIndex = viewState.locations.firstIndex(where: { $0 == location }) {
-            await MainActor.run { [location] in
-                viewState.locations[duplicateItemIndex] = location
-            }
-        } else {
-            await MainActor.run { [location] in
-                viewState.locations.append(location)
-            }
-        }
     }
     
     func getAddress(for location: CLLocation) async -> String {
@@ -66,6 +62,29 @@ final class HomeViewModel: ObservableObject {
                 }
                 
                 continuation.resume(returning: placemark.locality ?? placemark.administrativeArea ?? "NA")
+            }
+        }
+    }
+    
+    func getWeatherData(for location: CLLocation) async throws {
+        let latitude = String(location.coordinate.latitude)
+        let longitude = String(location.coordinate.longitude)
+        let city = await getAddress(for: location)
+        
+        let params = getAPIParams(for: latitude, longitude: longitude)
+        
+        let weather = try await dataManager.getCurrentWeather(params: params)
+        
+        let location = WGLocation(with: weather, city: city)
+        
+        //Check if the datasource already has an entry with the same city. If yes, replace it.
+        if let duplicateItemIndex = viewState.locations.firstIndex(where: { $0.city == location.city }) {
+            await MainActor.run { [location] in
+                viewState.locations[duplicateItemIndex] = location
+            }
+        } else {
+            await MainActor.run { [location] in
+                viewState.locations.append(location)
             }
         }
     }

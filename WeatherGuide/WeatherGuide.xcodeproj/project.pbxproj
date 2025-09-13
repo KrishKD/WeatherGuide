@@ -19,7 +19,7 @@
 		6BD297CB2C0E3989002293A3 /* LocationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD297CA2C0E3989002293A3 /* LocationMapView.swift */; };
 		6BD297CD2C0E3ED7002293A3 /* LocationMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD297CC2C0E3ED7002293A3 /* LocationMapViewModel.swift */; };
 		6BE20B5F2C09F31F000729C7 /* APIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE20B5E2C09F31F000729C7 /* APIHelper.swift */; };
-		6BE20B6A2C0A2E79000729C7 /* WGHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE20B602C0A2E79000729C7 /* WGHomeVC.swift */; };
+		6BE20B6A2C0A2E79000729C7 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE20B602C0A2E79000729C7 /* HomeViewController.swift */; };
 		6BE20B6B2C0A2E79000729C7 /* WGLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE20B612C0A2E79000729C7 /* WGLocationCell.swift */; };
 		6BE20B6D2C0A2E79000729C7 /* WGPointAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE20B632C0A2E79000729C7 /* WGPointAnnotation.swift */; };
 		6BE20B6E2C0A2E79000729C7 /* WGWeatherGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE20B642C0A2E79000729C7 /* WGWeatherGridCell.swift */; };
@@ -28,7 +28,6 @@
 		6BFCF68A2C2A216E001B9E47 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BFCF6892C2A216E001B9E47 /* LocationViewController.swift */; };
 		96475E972168F1E500D43700 /* WGProgressView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96475E942168F1E400D43700 /* WGProgressView.xib */; };
 		96475E982168F1E500D43700 /* WGProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96475E952168F1E400D43700 /* WGProgressView.swift */; };
-		96475E992168F1E500D43700 /* WGBaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96475E962168F1E400D43700 /* WGBaseVC.swift */; };
 		96475E9C2168F28300D43700 /* WGExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96475E9B2168F28300D43700 /* WGExtensions.swift */; };
 		96475E9F21690D5100D43700 /* WGUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96475E9E21690D5100D43700 /* WGUtils.swift */; };
 		964879D92167F26D00C168DE /* WGHelpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964879D82167F26D00C168DE /* WGHelpVC.swift */; };
@@ -59,7 +58,7 @@
 		6BD297CA2C0E3989002293A3 /* LocationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMapView.swift; sourceTree = "<group>"; };
 		6BD297CC2C0E3ED7002293A3 /* LocationMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMapViewModel.swift; sourceTree = "<group>"; };
 		6BE20B5E2C09F31F000729C7 /* APIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHelper.swift; sourceTree = "<group>"; };
-		6BE20B602C0A2E79000729C7 /* WGHomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WGHomeVC.swift; sourceTree = "<group>"; };
+		6BE20B602C0A2E79000729C7 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		6BE20B612C0A2E79000729C7 /* WGLocationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WGLocationCell.swift; sourceTree = "<group>"; };
 		6BE20B632C0A2E79000729C7 /* WGPointAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WGPointAnnotation.swift; sourceTree = "<group>"; };
 		6BE20B642C0A2E79000729C7 /* WGWeatherGridCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WGWeatherGridCell.swift; sourceTree = "<group>"; };
@@ -69,7 +68,6 @@
 		6BFCF6892C2A216E001B9E47 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		96475E942168F1E400D43700 /* WGProgressView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WGProgressView.xib; sourceTree = "<group>"; };
 		96475E952168F1E400D43700 /* WGProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WGProgressView.swift; sourceTree = "<group>"; };
-		96475E962168F1E400D43700 /* WGBaseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WGBaseVC.swift; sourceTree = "<group>"; };
 		96475E9B2168F28300D43700 /* WGExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WGExtensions.swift; sourceTree = "<group>"; };
 		96475E9E21690D5100D43700 /* WGUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGUtils.swift; sourceTree = "<group>"; };
 		964879D82167F26D00C168DE /* WGHelpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WGHelpVC.swift; sourceTree = "<group>"; };
@@ -116,7 +114,7 @@
 		6BD08C422C2B88C000CCB92E /* View */ = {
 			isa = PBXGroup;
 			children = (
-				6BE20B602C0A2E79000729C7 /* WGHomeVC.swift */,
+				6BE20B602C0A2E79000729C7 /* HomeViewController.swift */,
 				6BD08C432C2B88F300CCB92E /* HomeView.swift */,
 			);
 			path = View;
@@ -217,7 +215,6 @@
 			children = (
 				96475E942168F1E400D43700 /* WGProgressView.xib */,
 				96475E952168F1E400D43700 /* WGProgressView.swift */,
-				96475E962168F1E400D43700 /* WGBaseVC.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -459,7 +456,6 @@
 				6BFCF68A2C2A216E001B9E47 /* LocationViewController.swift in Sources */,
 				96FAADEC21654F4400960829 /* WGWeather.swift in Sources */,
 				6BD297C22C0DE5C2002293A3 /* DefaultDateFormatter.swift in Sources */,
-				96475E992168F1E500D43700 /* WGBaseVC.swift in Sources */,
 				96475E982168F1E500D43700 /* WGProgressView.swift in Sources */,
 				96475E9C2168F28300D43700 /* WGExtensions.swift in Sources */,
 				6BD297C62C0E30A6002293A3 /* CurrentWeatherViewController.swift in Sources */,
@@ -469,7 +465,7 @@
 				965CB81B21644E43007245D9 /* WGRestClientSession.swift in Sources */,
 				6BE20B742C0A2EB1000729C7 /* CurrentWeatherView.swift in Sources */,
 				6BD08C4B2C2BB5E700CCB92E /* HomeView.swift in Sources */,
-				6BE20B6A2C0A2E79000729C7 /* WGHomeVC.swift in Sources */,
+				6BE20B6A2C0A2E79000729C7 /* HomeViewController.swift in Sources */,
 				6BD297CD2C0E3ED7002293A3 /* LocationMapViewModel.swift in Sources */,
 				6BE20B6B2C0A2E79000729C7 /* WGLocationCell.swift in Sources */,
 				6BE20B5F2C09F31F000729C7 /* APIHelper.swift in Sources */,

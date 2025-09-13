@@ -11,15 +11,13 @@ import MapKit
 import SwiftUI
 import Combine
 
-class WGHomeVC: WGBaseVC {
-    static let dataExpiryTime: Int = 3600 //1 hour
-    private var dataSource: [WGLocation] = []
+class HomeViewController: UIViewController {
     private var viewModel: WGWeatherViewModel = WGWeatherViewModel()
-    private var homeVM: HomeViewModel = HomeViewModel(viewState: .init(locations: []))
+    private var homeViewModel: HomeViewModel = HomeViewModel(viewState: .init(locations: []))
     private var cancellable: Set<AnyCancellable> = []
     
     private lazy var hostingViewController: UIHostingController = {
-        let host = UIHostingController(rootView: HomeView(viewModel: homeVM))
+        let host = UIHostingController(rootView: HomeView(viewModel: homeViewModel))
         host.view.translatesAutoresizingMaskIntoConstraints = false
         return host
     }()
@@ -39,6 +37,8 @@ class WGHomeVC: WGBaseVC {
         self.view.backgroundColor = .white
         navigationController?.navigationBar.barTintColor = UIColor(named: "Muave")
         navigationItem.rightBarButtonItem = addLocationButton
+        navigationItem.title = "Weather"
+        
         addChild(hostingViewController)
         view.addSubview(hostingViewController.view)
         hostingViewController.didMove(toParent: self)
@@ -47,6 +47,7 @@ class WGHomeVC: WGBaseVC {
         let locationList = viewModel.retrieveLocationData()
         
         configureLayout()
+        configureObservability()
     }
     
     // MARK: - Initializer
@@ -57,6 +58,20 @@ class WGHomeVC: WGBaseVC {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: Observability
+    
+    func configureObservability() {
+        homeViewModel.$selectedLocation
+            .sink { [weak self] location in
+                guard let location else { return }
+                let viewModel = CurrentWeatherViewModel(location: location)
+                let currentWeatherVC: CurrentWeatherViewController = .init(viewModel: viewModel)
+                
+                self?.navigationController?.pushViewController(currentWeatherVC, animated: true)
+            }
+            .store(in: &cancellable)
     }
     
     // MARK: - Layout
@@ -85,29 +100,28 @@ class WGHomeVC: WGBaseVC {
     }
     
     func fetchData(for location: CLLocation) async {
-        let lat = String(location.coordinate.latitude)
-        let long = String(location.coordinate.longitude)
-        
-        let city = await homeVM.getAddress(for: location)
-        
         do {
-            try await homeVM.getWeatherData(for: lat, longitude: long, city: city)
+            DispatchQueue.main.async {
+                WGProgressView.showProgressView()
+            }
+            
+            try await homeViewModel.getWeatherData(for: location)
             
             //Refresh UI on main thread
             DispatchQueue.main.async {
-                self.removeProgressView()
+                WGProgressView.removeProgressView()
             }
         } catch let error as WGErrorResponse {
             //Remove progressView on main thread and display alert
-            DispatchQueue.main.async {
-                self.removeProgressView()
-                self.showAlert(message: error.localizedDescription)
+            DispatchQueue.main.async { [weak self] in
+                WGProgressView.removeProgressView()
+                self?.showAlert(message: error.localizedDescription)
             }
         } catch let error {
             //Remove progressView on main thread and display alert
-            DispatchQueue.main.async {
-                self.removeProgressView()
-                self.showAlert(message: error.localizedDescription)
+            DispatchQueue.main.async { [weak self] in
+                WGProgressView.removeProgressView()
+                self?.showAlert(message: error.localizedDescription)
             }
         }
     }
@@ -147,7 +161,7 @@ class WGHomeVC: WGBaseVC {
     }
 }*/
 
-extension WGHomeVC: WGWeatherViewModelProtocol {
+extension HomeViewController: WGWeatherViewModelProtocol {
     func dataSaveFailed(errorMsg: String) {
         showAlert(message: errorMsg)
     }

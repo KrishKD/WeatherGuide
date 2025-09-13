@@ -18,15 +18,13 @@ struct HomeView: View {
     
     var body: some View {
         if viewModel.viewState.isDataAvailable {
-            List(viewModel.viewState.locations) { location in
+            List(viewModel.viewState.locations, id: \.id) { location in
                 Text(location.city)
+                    .onTapGesture {
+                        print("Tap")
+                        viewModel.selectedLocation = location
+                    }
             }
-            .onTapGesture {
-                print("Tap")
-            }
-            .searchable(text: $searchText,
-                        placement: .toolbar,
-                        prompt: "Filter Location")
         } else {
             Text("Please add a location to view weather details")
         }
@@ -41,10 +39,10 @@ struct HomeView_Preview: PreviewProvider {
         let weather = try! JSONDecoder().decode(WGWeather.self, from: Data(weatherResponse.utf8))
         
         var locations: [WGLocation] {
-            var locations: [WGLocation] = Array(repeating: .init(with: weather), count: 1)
-            for index in 0..<locations.count {
-                locations[index].update(city: "Alpharetta")
-            }
+            let locations: [WGLocation] = Array(
+                repeating: WGLocation(with: weather, city: "Atlanta"),
+                count: 1
+            )
             
             return locations
         }
