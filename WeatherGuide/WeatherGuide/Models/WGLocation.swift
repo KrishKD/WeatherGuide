@@ -16,14 +16,14 @@ struct WGLocation: Identifiable {
     let longitude: Float
     var timestamp: TimeInterval?
     var weather: WGWeather?
-    var city: String = ""
+    var details: CLPlacemark?
     
-    init(with weather: WGWeather, city: String = "") {
+    init(with weather: WGWeather, locationDetails: CLPlacemark? = nil) {
         self.weather = weather
         self.latitude = weather.latitude
         self.longitude = weather.longitude
         self.timestamp = TimeInterval(weather.current.dt)
-        self.city = city
+        self.details = locationDetails
     }
 }
 

@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 
 protocol HomeViewModelProtocol {
-    func getAddress(for location: CLLocation) async -> String
+    func getAddress(for location: CLLocation) async -> Result<CLPlacemark?, WGError>
     func getWeatherData(for location: CLLocation) async throws
     var selectedLocation: WGLocation? { get set }
 }
@@ -21,6 +21,7 @@ final class HomeViewModel: HomeViewModelProtocol, ObservableObject {
         var isDataAvailable: Bool {
             !locations.isEmpty
         }
+        var errorMsg: String = ""
     }
     
     @Published var viewState: ViewState
@@ -49,19 +50,18 @@ final class HomeViewModel: HomeViewModelProtocol, ObservableObject {
                 "exclude": "hourly,minutely,alerts"]
     }
     
-    func getAddress(for location: CLLocation) async -> String {
+    func getAddress(for location: CLLocation) async -> Result<CLPlacemark?, WGError> {
         return await withCheckedContinuation { continuation in
             geocoder.reverseGeocodeLocation(location) { placeMarks, error in
-                guard let placemark = placeMarks?.first else {
-                    return continuation.resume(returning: "NA")
+                guard let placemark = placeMarks?.first(where: { $0.locality != nil }) else {
+                    return continuation.resume(returning: .failure(WGError.invalidLocation))
                 }
                 
                 if let error {
-                    print(error.localizedDescription)
-                    return continuation.resume(returning: "NA")
+                    return continuation.resume(returning: .failure(WGError.genericMessage(errorMsg: error.localizedDescription)))
                 }
                 
-                continuation.resume(returning: placemark.locality ?? placemark.administrativeArea ?? "NA")
+                continuation.resume(returning: .success(placemark))
             }
         }
     }
@@ -69,16 +69,24 @@ final class HomeViewModel: HomeViewModelProtocol, ObservableObject {
     func getWeatherData(for location: CLLocation) async throws {
         let latitude = String(location.coordinate.latitude)
         let longitude = String(location.coordinate.longitude)
-        let city = await getAddress(for: location)
+        var locationDetails: CLPlacemark?
+        
+        switch await getAddress(for: location) {
+        case .success(let location):
+            locationDetails = location
+        case .failure(let error):
+            viewState.errorMsg = error.errorMessage
+            return
+        }
         
         let params = getAPIParams(for: latitude, longitude: longitude)
         
         let weather = try await dataManager.getCurrentWeather(params: params)
         
-        let location = WGLocation(with: weather, city: city)
+        let location = WGLocation(with: weather, locationDetails: locationDetails)
         
         //Check if the datasource already has an entry with the same city. If yes, replace it.
-        if let duplicateItemIndex = viewState.locations.firstIndex(where: { $0.city == location.city }) {
+        if let duplicateItemIndex = viewState.locations.firstIndex(where: { $0.details?.locality == location.details?.locality }) {
             await MainActor.run { [location] in
                 viewState.locations[duplicateItemIndex] = location
             }
