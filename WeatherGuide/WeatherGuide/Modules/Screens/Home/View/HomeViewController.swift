@@ -127,85 +127,8 @@ class HomeViewController: UIViewController {
     }
 }
 
-// MARK: - TableView Delegate methods
-
-/*extension WGHomeVC: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let timestamp = dataSource[indexPath.row].timestamp {
-            let lastDataReceivedTimeStamp = Int(timestamp)
-            //Get current time in UTC
-            let currentTimeInterval = Int(Date().timeIntervalSince1970)
-            let difference = currentTimeInterval - lastDataReceivedTimeStamp
-            
-            //Request for new weather data if the last received data is stale by an hour
-            if difference > 3600 {
-                Task {
-                    await fetchData(for: .init(latitude: CLLocationDegrees(dataSource[indexPath.row].latitude),
-                                               longitude: CLLocationDegrees(dataSource[indexPath.row].longtitude)))
-                    
-                    let location = self.dataSource[indexPath.row]
-                    displayCurrentWeather(for: location)
-                }
-            } else {
-                let location = self.dataSource[indexPath.row]
-                displayCurrentWeather(for: location)
-            }
-        }
-    }
-    
-    func displayCurrentWeather(for location: WGLocation) {
-        let viewModel = CurrentWeatherViewModel(location: location)
-        let currentWeatherVC: CurrentWeatherViewController = .init(viewModel: viewModel)
-        
-        navigationController?.pushViewController(currentWeatherVC, animated: true)
-    }
-}*/
-
 extension HomeViewController: WGWeatherViewModelProtocol {
     func dataSaveFailed(errorMsg: String) {
         showAlert(message: errorMsg)
     }
 }
-
-/*extension WGHomeVC: UISearchBarDelegate {
-    
-    func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        if let textField = searchBar.value(forKey: "searchField") as? UITextField {
-            let nsString = textField.text as NSString?
-            if let searchString = nsString?.replacingCharacters(in: range, with: text) {
-                viewModel.filterBySearchText(searchText: searchString) { [weak self] (locations) in
-                    DispatchQueue.main.async {
-                        guard let myself = self, let locList = locations else {
-                            return
-                        }
-                        
-                        if locList.isEmpty {
-                            myself.dataSource.removeAll()
-                        } else {
-                            myself.dataSource = locList
-                        }
-                        
-                        myself.tableView.reloadData()
-                    }
-                }
-            }
-        }
-        return true
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-        if let textField = searchBar.value(forKey: "searchField") as? UITextField,
-            let searchText = textField.text, searchText == "" {
-            self.dataSource = self.viewModel.locations
-            self.tableView.reloadData()
-        }
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText == "" {
-            self.dataSource = self.viewModel.locations
-            self.tableView.reloadData()
-        }
-    }
-}*/
