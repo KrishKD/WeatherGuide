@@ -55,13 +55,12 @@ struct LocationMapView: View {
         } label: {
             Text("Add Location")
                 .bold()
-                .font(.title3)
-                .foregroundStyle(Color("Text", bundle: Bundle.main))
+                .font(.body)
+                .foregroundStyle(.white)
         }
         .padding()
-        .background(Color("Blue", bundle: Bundle.main))
+        .background(.blue.opacity(0.8))
         .clipShape(RoundedRectangle(cornerRadius: 10.0))
-        .padding(.init(top: 0, leading: 0, bottom: 20.0, trailing: 0))
     }
 }
 

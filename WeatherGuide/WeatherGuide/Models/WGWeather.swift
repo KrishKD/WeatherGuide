@@ -9,6 +9,7 @@
 import Foundation
 
 struct WGWeather: Codable {
+    let id: UUID = UUID()
     let latitude: Float
     let longitude: Float
     let timezone: String
@@ -24,7 +25,14 @@ struct WGWeather: Codable {
     }
 }
 
+extension WGWeather: Hashable {
+    static func == (lhs: WGWeather, rhs: WGWeather) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 struct CurrentWeather: Codable {
+    let id: UUID = UUID()
     let dt: Int
     let sunrise: Int
     let sunset: Int
@@ -56,6 +64,12 @@ struct CurrentWeather: Codable {
     }
 }
 
+extension CurrentWeather: Hashable {
+    static func == (lhs: CurrentWeather, rhs: CurrentWeather) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 struct Weather: Codable {
     let id: Int
     let main: String
@@ -68,7 +82,14 @@ struct Weather: Codable {
     }
 }
 
+extension Weather: Hashable {
+    static func == (lhs: Weather, rhs: Weather) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 struct Daily: Codable {
+    let id: UUID = UUID()
     let dt: Int
     let sunrise, sunset: Int
     let moonrise, moonset: Int
@@ -99,7 +120,14 @@ struct Daily: Codable {
     }
 }
 
+extension Daily: Hashable {
+    static func == (lhs: Daily, rhs: Daily) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 struct Temperature: Codable {
+    let id: UUID = UUID()
     let day: Float
     let min: Float
     let max: Float
@@ -114,7 +142,14 @@ struct Temperature: Codable {
     }
 }
 
+extension Temperature: Hashable {
+    static func == (lhs: Temperature, rhs: Temperature) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 struct FeelsLike: Codable {
+    let id: UUID = UUID()
     let day: Float
     let night: Float
     let evening: Float
@@ -124,5 +159,11 @@ struct FeelsLike: Codable {
         case day, night
         case evening = "eve"
         case morning = "morn"
+    }
+}
+
+extension FeelsLike: Hashable {
+    static func == (lhs: FeelsLike, rhs: FeelsLike) -> Bool {
+        lhs.id == rhs.id
     }
 }

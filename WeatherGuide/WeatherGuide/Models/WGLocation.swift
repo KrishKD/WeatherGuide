@@ -13,26 +13,28 @@ import CoreLocation
 struct WGLocation: Identifiable {
     let id: UUID = UUID()
     let latitude: Float
-    let longtitude: Float
+    let longitude: Float
     var timestamp: TimeInterval?
     var weather: WGWeather?
-    var city: String = ""
+    var details: CLPlacemark?
     
-    init(with weather: WGWeather) {
+    init(with weather: WGWeather, locationDetails: CLPlacemark? = nil) {
         self.weather = weather
         self.latitude = weather.latitude
-        self.longtitude = weather.longitude
+        self.longitude = weather.longitude
         self.timestamp = TimeInterval(weather.current.dt)
-    }
-    
-    mutating
-    func update(city: String) {
-        self.city = city
+        self.details = locationDetails
     }
 }
 
 extension WGLocation: Equatable {
     static func == (lhs: WGLocation, rhs: WGLocation) -> Bool {
-        return lhs.latitude == rhs.latitude && lhs.longtitude == rhs.longtitude
-    }    
+        return lhs.id == rhs.id
+    }
+}
+
+extension WGLocation: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }

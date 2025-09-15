@@ -12,9 +12,8 @@ import Combine
 import CoreLocation
 import MapKit
 
-@MainActor
 class LocationMapViewModel: NSObject, ObservableObject {
-    // @Published var viewState: ViewState
+    
     @Published var mapRegion: MapCameraPosition = MapCameraPosition.region(.init(
         center: .init(latitude: 34.13024, longitude: -84.22762),
         latitudinalMeters: 1000,
@@ -78,7 +77,7 @@ class LocationMapViewModel: NSObject, ObservableObject {
     }
 }
 
-extension LocationMapViewModel: CLLocationManagerDelegate {    
+extension LocationMapViewModel: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
         print(error.localizedDescription)
     }
