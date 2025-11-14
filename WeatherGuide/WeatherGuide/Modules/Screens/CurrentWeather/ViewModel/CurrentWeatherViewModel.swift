@@ -54,6 +54,10 @@ class CurrentWeatherViewModel: NSObject, ObservableObject {
             windSpeed: "\(windSpeed) mph"
         )
     }
+    
+    var navigationTitle: String {
+        "\(location.details?.locality ?? ""), \(location.details?.administrativeArea ?? "")"
+    }
 }
 
 

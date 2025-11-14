@@ -20,14 +20,20 @@ class CurrentWeatherViewController: UIViewController {
             rootView: CurrentWeatherView(viewModel: viewModel)
         )
         controller.view.translatesAutoresizingMaskIntoConstraints = false
+        controller.view.backgroundColor = UIColor(named: "Base")
         return controller
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.title = viewModel.navigationTitle
         // Do any additional setup after loading the view.
+        
+        self.view.backgroundColor = UIColor(named: "Base")
+        addChild(hostingViewController)
         view.addSubview(hostingViewController.view)
+        hostingViewController.didMove(toParent: self)
     }
     
     // MARK: - Initializer
@@ -53,15 +59,4 @@ class CurrentWeatherViewController: UIViewController {
             hostingViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor)
         ])
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
