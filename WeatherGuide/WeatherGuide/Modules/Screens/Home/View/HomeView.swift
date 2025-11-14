@@ -23,7 +23,10 @@ struct HomeView: View {
                     .onTapGesture {
                         viewModel.selectedLocation = location
                     }
+                    .listRowSeparatorTint(Color("Overlay2"))
+                    .listRowBackground(Color("Mauve").opacity(0.1))
             }
+            .scrollContentBackground(.hidden)
         } else {
             Text("Please add a location to view weather details")
         }

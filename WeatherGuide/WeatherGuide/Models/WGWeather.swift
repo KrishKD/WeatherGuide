@@ -47,7 +47,7 @@ struct CurrentWeather: Codable {
     let windSpeed: Float
     let windDeg: Int
     let windGust: Float?
-    let rain: Float?
+    let rain: [String: Float]?
     let snow: Float?
     let weather: [Weather]
     

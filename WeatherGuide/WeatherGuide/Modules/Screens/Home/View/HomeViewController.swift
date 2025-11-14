@@ -19,6 +19,7 @@ class HomeViewController: UIViewController {
     private lazy var hostingViewController: UIHostingController = {
         let host = UIHostingController(rootView: HomeView(viewModel: homeViewModel))
         host.view.translatesAutoresizingMaskIntoConstraints = false
+        host.view.backgroundColor = UIColor(named: "Base")
         return host
     }()
     
@@ -27,6 +28,7 @@ class HomeViewController: UIViewController {
                                      style: .plain,
                                      target: self,
                                      action: #selector(addLocationBtnClick(_:)))
+        button.tintColor = UIColor(named: "Mauve")
         return button
     }()
     
@@ -34,8 +36,8 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.view.backgroundColor = .white
-        navigationController?.navigationBar.barTintColor = UIColor(named: "Muave")
+        self.view.backgroundColor = UIColor(named: "Base")
+        navigationController?.navigationBar.barTintColor = UIColor(named: "Mauve")
         navigationItem.rightBarButtonItem = addLocationButton
         navigationItem.title = "Weather"
         

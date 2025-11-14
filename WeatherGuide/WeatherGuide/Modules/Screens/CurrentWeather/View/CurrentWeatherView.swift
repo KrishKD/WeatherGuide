@@ -14,7 +14,8 @@ struct CurrentWeatherView: View {
     
     var body: some View {
         ZStack {
-            Color("Surface2")
+            Color("Mauve")
+                .opacity(0.1)
             
             ViewThatFits(in: .horizontal) {
                 HStack {
@@ -49,13 +50,8 @@ struct CurrentWeatherView: View {
                     }
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: WGSpacer.medium, trailing: 0))
                 }
-                
-                
             }
-            
         }
-        // .frame(width: .infinity, height: .infinity)
-        // .ignoresSafeArea()
     }
     
     var currentWeatherConditionStack: some View {
