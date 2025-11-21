@@ -10,8 +10,10 @@ import Foundation
 import CoreLocation
 
 protocol HomeViewModelProtocol {
+    func fetchLocationFromDB() async
+    func saveLocationToDB(_ placemark: CLPlacemark?) async
     func getAddress(for location: CLLocation) async -> Result<CLPlacemark?, WGError>
-    func getWeatherData(for location: CLLocation) async throws
+    func fetchAddressDetails(for location: CLLocation) async -> Result<CLPlacemark?, WGError>
     var selectedLocation: WGLocation? { get set }
 }
 
@@ -25,11 +27,7 @@ final class HomeViewModel: HomeViewModelProtocol, ObservableObject {
     }
     
     @Published var viewState: ViewState
-    @Published var selectedLocation: WGLocation? {
-        didSet {
-            print(self)
-        }
-    }
+    @Published var selectedLocation: WGLocation?
         
     private let geocoder: CLGeocoder
     private let dataManager: WGDataManager
@@ -42,12 +40,14 @@ final class HomeViewModel: HomeViewModelProtocol, ObservableObject {
         self.geocoder = geocoder
     }
     
-    private func getAPIParams(for latitude: String, longitude: String) -> [String: String] {
-        return ["lat": latitude,
-                "lon": longitude,
-                "appid": API.key,
-                "units": "imperial",
-                "exclude": "hourly,minutely,alerts"]
+    func fetchLocationFromDB() async {
+        let locations: [Location] = await CoreDataStack.shared.fetchLocations()
+        
+        guard !locations.isEmpty else { return }
+        
+        await MainActor.run { [weak self] in
+            self?.viewState.locations = locations.map { return WGLocation(with: $0) }
+        }
     }
     
     func getAddress(for location: CLLocation) async -> Result<CLPlacemark?, WGError> {
@@ -66,34 +66,20 @@ final class HomeViewModel: HomeViewModelProtocol, ObservableObject {
         }
     }
     
-    func getWeatherData(for location: CLLocation) async throws {
-        let latitude = String(location.coordinate.latitude)
-        let longitude = String(location.coordinate.longitude)
-        var locationDetails: CLPlacemark?
-        
+    func fetchAddressDetails(for location: CLLocation) async -> Result<CLPlacemark?, WGError> {
         switch await getAddress(for: location) {
-        case .success(let location):
-            locationDetails = location
+        case .success(let placemark):
+            return .success(placemark)
         case .failure(let error):
             viewState.errorMsg = error.errorMessage
-            return
+            return .failure(error)
         }
+    }
+    
+    func saveLocationToDB(_ placemark: CLPlacemark?) async {
+        guard let placemark, !CoreDataStack.shared.hasDuplicateObject(for: placemark.locality) else { return }
         
-        let params = getAPIParams(for: latitude, longitude: longitude)
-        
-        let weather = try await dataManager.getCurrentWeather(params: params)
-        
-        let location = WGLocation(with: weather, locationDetails: locationDetails)
-        
-        //Check if the datasource already has an entry with the same city. If yes, replace it.
-        if let duplicateItemIndex = viewState.locations.firstIndex(where: { $0.details?.locality == location.details?.locality }) {
-            await MainActor.run { [location] in
-                viewState.locations[duplicateItemIndex] = location
-            }
-        } else {
-            await MainActor.run { [location] in
-                viewState.locations.append(location)
-            }
-        }
+        await CoreDataStack.shared.createLocationObjectModel(from: placemark)
+        await CoreDataStack.shared.save()
     }
 }

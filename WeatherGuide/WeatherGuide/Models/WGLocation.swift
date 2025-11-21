@@ -12,18 +12,18 @@ import CoreLocation
 
 struct WGLocation: Identifiable {
     let id: UUID = UUID()
-    let latitude: Float
-    let longitude: Float
-    var timestamp: TimeInterval?
-    var weather: WGWeather?
-    var details: CLPlacemark?
+    let latitude: Double
+    let longitude: Double
+    var dateModified: Date
+    var locality: String?
+    var administrativeArea: String?
     
-    init(with weather: WGWeather, locationDetails: CLPlacemark? = nil) {
-        self.weather = weather
-        self.latitude = weather.latitude
-        self.longitude = weather.longitude
-        self.timestamp = TimeInterval(weather.current.dt)
-        self.details = locationDetails
+    init(with latitude: Double, longitude: Double, locality: String?, administrativeArea: String? , dateModified: Date) {
+        self.latitude = latitude
+        self.longitude = longitude
+        self.dateModified = dateModified
+        self.locality = locality
+        self.administrativeArea = administrativeArea
     }
 }
 
@@ -36,5 +36,15 @@ extension WGLocation: Equatable {
 extension WGLocation: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+}
+
+extension WGLocation {
+    init(with location: Location) {
+        self.latitude = location.latitude
+        self.longitude = location.longitude
+        self.locality = location.locality
+        self.administrativeArea = location.administrativeArea
+        self.dateModified = location.dateModified ?? Date()
     }
 }
