@@ -16,14 +16,11 @@ let weatherResponse = """
 let weather = try! JSONDecoder().decode(WGWeather.self, from: Data(weatherResponse.utf8))
 
 let location = WGLocation(
-    with: weather,
-    locationDetails: MKPlacemark(
-        coordinate:  CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
-        addressDictionary: [
-            "City": "San Francisco",
-            "State": "CA",
-            "Country": "United States"
-        ])
+    with: 37.7749,
+    longitude: -122.4194,
+    locality: "San Francisco",
+    administrativeArea: "CA",
+    dateModified: Date()
 )
 
 #endif

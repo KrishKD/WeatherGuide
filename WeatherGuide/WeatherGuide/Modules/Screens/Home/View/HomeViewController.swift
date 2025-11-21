@@ -12,12 +12,13 @@ import SwiftUI
 import Combine
 
 class HomeViewController: UIViewController {
-    private var viewModel: WGWeatherViewModel = WGWeatherViewModel()
     private var homeViewModel: HomeViewModel = HomeViewModel(viewState: .init(locations: []))
     private var cancellable: Set<AnyCancellable> = []
     
-    private lazy var hostingViewController: UIHostingController = {
-        let host = UIHostingController(rootView: HomeView(viewModel: homeViewModel))
+    private lazy var hostingViewController: UIHostingController<some View> = {
+        let homeView = HomeView(viewModel: homeViewModel)
+            .environment(\.managedObjectContext, CoreDataStack.shared.persistentContainer.viewContext)
+        let host = UIHostingController(rootView: homeView)
         host.view.translatesAutoresizingMaskIntoConstraints = false
         host.view.backgroundColor = UIColor(named: "Base")
         return host
@@ -45,9 +46,6 @@ class HomeViewController: UIViewController {
         view.addSubview(hostingViewController.view)
         hostingViewController.didMove(toParent: self)
         
-        //Check if there are any archived data
-        let locationList = viewModel.retrieveLocationData()
-        
         configureLayout()
         configureObservability()
     }
@@ -68,7 +66,7 @@ class HomeViewController: UIViewController {
         homeViewModel.$selectedLocation
             .sink { [weak self] location in
                 guard let location else { return }
-                let viewModel = CurrentWeatherViewModel(location: location)
+                let viewModel = CurrentWeatherViewModel(location: location, viewState: .init(currentTemperature: "", maximumTemperature: "", minimumTemperature: "", sunriseTime: "", sunsetTime: "", humidity: "", weatherStatusImageName: "", windSpeed: ""))
                 let currentWeatherVC: CurrentWeatherViewController = .init(viewModel: viewModel)
                 
                 self?.navigationController?.pushViewController(currentWeatherVC, animated: true)
@@ -107,7 +105,15 @@ class HomeViewController: UIViewController {
                 WGProgressView.showProgressView()
             }
             
-            try await homeViewModel.getWeatherData(for: location)
+            switch await homeViewModel.fetchAddressDetails(for: location) {
+            case .success(let placemark):
+                Task {
+                    await homeViewModel.saveLocationToDB(placemark)
+                    await homeViewModel.fetchLocationFromDB()
+                }
+            case .failure(let error):
+                throw error
+            }
             
             //Refresh UI on main thread
             DispatchQueue.main.async {
@@ -126,11 +132,5 @@ class HomeViewController: UIViewController {
                 self?.showAlert(message: error.localizedDescription)
             }
         }
-    }
-}
-
-extension HomeViewController: WGWeatherViewModelProtocol {
-    func dataSaveFailed(errorMsg: String) {
-        showAlert(message: errorMsg)
     }
 }

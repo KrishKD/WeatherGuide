@@ -19,7 +19,7 @@ struct HomeView: View {
     var body: some View {
         if viewModel.viewState.isDataAvailable {
             List(viewModel.viewState.locations, id: \.id) { location in
-                Text(location.details?.locality ?? "NA")
+                Text(location.locality ?? "NA")
                     .onTapGesture {
                         viewModel.selectedLocation = location
                     }
@@ -29,6 +29,11 @@ struct HomeView: View {
             .scrollContentBackground(.hidden)
         } else {
             Text("Please add a location to view weather details")
+                .onAppear {
+                    Task {
+                        await viewModel.fetchLocationFromDB()
+                    }
+                }
         }
     }
 }
