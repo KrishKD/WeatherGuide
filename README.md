@@ -9,8 +9,8 @@ This universal app helps the user in viewing current weather conditions of a par
 ## App Screens:
 ### Home Screen:
 
-Home screen lists all locations that were saved. The screen provides an option to add, remove and search a location.
-![Home screenshot](Screenshots/Home.png?raw=true) ![Home1 screenshot](Screenshots/Home1.png?raw=true)
+Home screen lists all locations that were saved. The screen provides an option to add a location.
+![Home screenshot](Screenshots/Home.png?raw=true)
 ### Location Screen:
 
 Here the user is by default taken to his current location. Other locations can also be added by a simple tap on the map. A pin a displayed were the user taps.

@@ -8,33 +8,43 @@
 
 import Foundation
 import MapKit
-class WGLocation: NSObject, NSCoding {
+import CoreLocation
 
-    var id: Int?
-    var timestamp: TimeInterval?
-    var weather: WGWeatherModel?
-    var forecast: WGForecastModel?
+struct WGLocation: Identifiable {
+    let id: UUID = UUID()
+    let latitude: Double
+    let longitude: Double
+    var dateModified: Date
+    var locality: String?
+    var administrativeArea: String?
     
-    private let idDef = "id"
-    private let timestampDef = "timestamp"
-    private let weatherDef = "weather"
-    
-    func encode(with aCoder: NSCoder) {
-        aCoder.encode(id, forKey: idDef)
-        aCoder.encode(timestamp, forKey: timestampDef)
-        aCoder.encode(weather, forKey: weatherDef)
+    init(with latitude: Double, longitude: Double, locality: String?, administrativeArea: String? , dateModified: Date) {
+        self.latitude = latitude
+        self.longitude = longitude
+        self.dateModified = dateModified
+        self.locality = locality
+        self.administrativeArea = administrativeArea
     }
-    
-    required init?(coder aDecoder: NSCoder) {
-        id = aDecoder.decodeObject(forKey: idDef) as? Int
-        timestamp  = aDecoder.decodeObject(forKey: timestampDef) as? TimeInterval
-        weather = aDecoder.decodeObject(forKey: weatherDef) as? WGWeatherModel
+}
+
+extension WGLocation: Equatable {
+    static func == (lhs: WGLocation, rhs: WGLocation) -> Bool {
+        return lhs.id == rhs.id
     }
-    
-    init(id: Int?, timeStamp: TimeInterval?, weather: WGWeatherModel?) {
-        self.id = id
-        self.timestamp = timeStamp
-        self.weather = weather
-        super.init()
+}
+
+extension WGLocation: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
+
+extension WGLocation {
+    init(with location: Location) {
+        self.latitude = location.latitude
+        self.longitude = location.longitude
+        self.locality = location.locality
+        self.administrativeArea = location.administrativeArea
+        self.dateModified = location.dateModified ?? Date()
     }
 }

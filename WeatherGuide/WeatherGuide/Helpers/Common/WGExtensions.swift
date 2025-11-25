@@ -19,3 +19,38 @@ extension ShowAlert where Self: UIViewController {
 }
 
 extension UIViewController: ShowAlert {}
+
+extension Decimal {
+    var intValue: Int {
+        NSDecimalNumber(decimal: self).intValue
+    }
+}
+
+extension String {
+    var temperature: AttributedString {
+        var attributedString = AttributedString(self)
+        attributedString[(attributedString.index(attributedString.endIndex, offsetByCharacters: -2))..<attributedString.endIndex].setAttributes(.init([.baselineOffset : 10.0, .font: UIFont.preferredFont(forTextStyle: .callout)]))
+        return attributedString
+    }
+}
+
+extension Date {
+    func toHHmmaString(with formatter: DateFormatter) -> String {
+        return formatter.string(from: self)
+    }
+}
+
+extension UIView {
+    func equalToSuperView(constant: CGFloat = 0.0) {
+        guard let superview = superview else {
+            return
+        }
+        
+        NSLayoutConstraint.activate([
+            topAnchor.constraint(equalTo: superview.topAnchor, constant: constant),
+            superview.rightAnchor.constraint(equalTo: rightAnchor, constant: constant),
+            superview.bottomAnchor.constraint(equalTo: bottomAnchor, constant: constant),
+            leftAnchor.constraint(equalTo: superview.leftAnchor, constant: constant)
+        ])
+    }
+}

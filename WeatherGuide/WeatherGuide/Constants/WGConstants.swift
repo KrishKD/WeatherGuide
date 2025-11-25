@@ -9,11 +9,23 @@
 import Foundation
 
 struct WGURL {
-    static let endpoint: String = "http://api.openweathermap.org/data/2.5/"
+    static let endpoint: String = "https://api.openweathermap.org/data/3.0/"
 }
 
 struct API {
-    static let key: String = "9b33cf970785e69d5643d66da28e5117"
-    static let currentWeather: String = "weather"
-    static let forecast: String = "forecast"
+    static let key: String = ""
+    static let currentWeather: String = "onecall"
+}
+
+class WGSpacer {
+    static let xxs: CGFloat = 2.0
+    static let xs: CGFloat = 4.0
+    static let small: CGFloat = 8.0
+    static let medium: CGFloat = 16.0
+    static let large: CGFloat = 32.0
+    static let extraLarge: CGFloat = 64.0
+}
+
+struct Strings {
+    static let temperatureSymbol = "°F"
 }
