@@ -71,4 +71,18 @@ extension CoreDataStack {
             return []
         }
     }
+    
+    func updateDateModified(for locality: String) async {
+        let request = Location.fetchRequest()
+        request.predicate = NSPredicate(format: "locality = %@", locality)
+        
+        do {
+            if let location = try persistentContainer.viewContext.fetch(request).first {
+                location.dateModified = Date()
+                await save()
+            }
+        } catch {
+            return
+        }
+    }
 }
