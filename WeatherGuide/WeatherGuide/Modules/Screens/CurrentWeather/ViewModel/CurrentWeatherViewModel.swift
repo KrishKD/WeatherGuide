@@ -20,6 +20,8 @@ class CurrentWeatherViewModel: NSObject, ObservableObject {
         var humidity: String
         var weatherStatusImageName: String
         var windSpeed: String
+        var shouldDisplayProgressView: Bool = true
+        var errorMessage: String = ""
     }
     
     @Published var viewState: ViewState
@@ -54,13 +56,25 @@ class CurrentWeatherViewModel: NSObject, ObservableObject {
                 "exclude": "hourly,minutely,alerts"]
     }
     
-    func getWeatherData() async throws {
+    func getWeatherData() async {
         let latitude = String(location.latitude)
         let longitude = String(location.longitude)
         
         let params = getAPIParams(for: latitude, longitude: longitude)
         
-        self.weather = try await dataManager.getCurrentWeather(params: params)
+        do {
+            self.weather = try await dataManager.getCurrentWeather(params: params)
+            await MainActor.run {
+                viewState.shouldDisplayProgressView = false
+                viewState.errorMessage = ""
+            }
+            await updateDB(for: location.locality ?? "")
+        } catch let error {
+            await MainActor.run {
+                viewState.shouldDisplayProgressView = false
+                viewState.errorMessage = error.localizedDescription
+            }
+        }
     }
     
     func updateViewState() async {
@@ -90,6 +104,8 @@ class CurrentWeatherViewModel: NSObject, ObservableObject {
             self.viewState.windSpeed = "\(windSpeed) mph"
         }
     }
+    
+    func updateDB(for locality: String) async {
+        await CoreDataStack.shared.updateDateModified(for: locality)
+    }
 }
-
-

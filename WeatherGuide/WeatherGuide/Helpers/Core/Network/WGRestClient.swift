@@ -65,7 +65,7 @@ final class WGRestClient<T: Decodable> {
             return .success(WGResponse(statusCode: httpResponse.statusCode,
                                        header: httpResponse.allHeaderFields as? [String: String] ?? [:],
                                        body: responseObject))
-        } catch let error {
+        } catch {
             return .failure(.jsonParseError())
         }
     }

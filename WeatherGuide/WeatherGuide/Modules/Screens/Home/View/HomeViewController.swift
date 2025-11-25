@@ -50,6 +50,12 @@ class HomeViewController: UIViewController {
         configureObservability()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        Task {
+            await homeViewModel.fetchLocationFromDB()
+        }
+    }
+    
     // MARK: - Initializer
     
     init() {
